@@ -271,6 +271,34 @@
             } 
         }
 
+/* Stijl voor de feest-deeltjes (bijv. confetti of ballonnen) */
+.celebration-particle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--accent); /* Standaard accentkleur */
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0);
+    animation: celebrate-up 1.5s forwards ease-out; /* Animatie die we zo maken */
+}
+
+/* Animatie voor de feest-deeltjes */
+@keyframes celebrate-up {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0);
+    }
+    20% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) scale(0.2); /* Beweeg en krimp */
+    }
+}
+        
         .phase-header { 
             background: var(--primary); 
             color: white; 
@@ -394,6 +422,8 @@
 </div>
 
 <div class="container">
+    
+    <div id="celebrationContainer" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></div>
     
     <!-- DASHBOARD TAB -->
     <div id="dash" class="tab-content active">
@@ -568,18 +598,21 @@
                 { w: "13", d: "23 - 29 mrt", task: "Di: 40m Jog • Do: 10km Tempo • Zo: 32km Wandelen", note: "🎯 30KM+" },
                 { w: "14", d: "30 mrt - 5 apr", task: "Di: 45m Jog • Do: Kracht • Zo: 20km Wandelen", note: "" },
                 { w: "15", d: "6 - 12 apr", task: "Di: 45m Jog • Do: 12km Tempo • Zo: 35km Wandelen", note: "" },
-                { w: "16", d: "13 - 19 apr", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" }
+                { w: "16", d: "13 - 19 apr", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" },
+                { w: "17", d: "20 - 26 apr", task: "Di: 45m Jog • Do: Kracht • Zo: 22km Wandelen", note: "" }
             ]
         },
         { 
             phase: "FASE 3: PIEK VOLUME (MEI - JUN)", 
             weeks: [
-                { w: "18", d: "4 - 10 mei", task: "Di: 50m Jog • Do: 14km Tempo • Zo: 40km Wandelen", note: "🎯 40KM" },
-                { w: "19", d: "11 - 17 mei", task: "Di: 50m Jog • Do: Kracht • Zo: 20km Herstel", note: "" },
-                { w: "20", d: "18 - 24 mei", task: "Di: Interval • Do: 14km Tempo • Zo: 42km Wandelen", note: "🎯 MARATHON" },
-                { w: "21", d: "25 - 31 mei", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" },
-                { w: "22", d: "1 - 7 juni", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 50km Wandelen", note: "🎯 50KM" },
-                { w: "24", d: "15 - 21 juni", task: "Di: Interval • Do: 10km Los • Zo: 25km Wandelen", note: "" },
+                { w: "19", d: "27 apr - 3 mei", task: "Di: 45m Jog • Do: 14km Tempo • Zo: 25km Wandelen", note: "" },
+                { w: "19", d: "4 - 10 mei", task: "Di: 50m Jog • Do: 14km Tempo • Zo: 40km Wandelen", note: "🎯 40KM" },
+                { w: "20", d: "11 - 17 mei", task: "Di: 50m Jog • Do: Kracht • Zo: 20km Herstel", note: "" },
+                { w: "21", d: "18 - 24 mei", task: "Di: Interval • Do: 14km Tempo • Zo: 42km Wandelen", note: "🎯 MARATHON" },
+                { w: "22", d: "25 - 31 mei", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" },
+                { w: "23", d: "1 - 7 juni", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 50km Wandelen", note: "🎯 50KM" },
+                { w: "24, d: "8 - 14 juni", task: "Di: 60m Jog • Do: 14km Tempo • Zo: 35km Wandelen", note: "" },
+                { w: "25, d: "15 - 21 juni", task: "Di: Interval • Do: 10km Los • Zo: 25km Wandelen", note: "" },
                 { w: "26", d: "22 - 28 juni", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km NACHT", note: "🌙 NACHT" }
             ]
         },
@@ -626,6 +659,42 @@ const GREETINGS = [
         loadData();
         loadTheme();
         showWelcomeMessage();
+        // ==================== CELEBRATION EFFECT ====================
+function doCelebration() {
+    const container = document.getElementById('celebrationContainer');
+    if (!container) return;
+
+    // Aantal deeltjes dat we willen laten vliegen
+    const numParticles = 30; 
+    const colors = ['#f39c12', '#48bb78', '#1a2a6c', '#b21f1f']; // Verschillende kleuren voor de deeltjes
+
+    for (let i = 0; i < numParticles; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('celebration-particle');
+        
+        // Geef elk deeltje een willekeurige kleur
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Startpunt van de animatie (onderaan in het midden van het scherm)
+        particle.style.left = '50%'; 
+        particle.style.bottom = '0%'; 
+
+        // Willekeurige richting en afstand voor de animatie
+        const xOffset = (Math.random() - 0.5) * 300; // -150px tot 150px horizontaal
+        const yOffset = - (Math.random() * 200 + 100); // Omhoog bewegen, tussen -100px en -300px
+
+        // Gebruik CSS custom properties om unieke animaties te maken
+        particle.style.setProperty('--x', `${xOffset}px`);
+        particle.style.setProperty('--y', `${yOffset}px`);
+
+        container.appendChild(particle);
+
+        // Verwijder het deeltje na de animatie om het DOM schoon te houden
+        particle.addEventListener('animationend', () => {
+            particle.remove();
+        });
+    }
+}
         document.getElementById('tDate').valueAsDate = new Date();
         renderAll();
         renderExercises();
@@ -713,6 +782,7 @@ const GREETINGS = [
         document.getElementById('tKnee').value = '0';
         
         alert('✅ Training opgeslagen!');
+        doCelebration();
     }
 
     // ==================== DELETE TRAINING ====================
@@ -979,6 +1049,7 @@ const GREETINGS = [
 </script>
 </body>
 </html>
+
 
 
 
