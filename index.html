@@ -605,14 +605,14 @@
         { 
             phase: "FASE 3: PIEK VOLUME (MEI - JUN)", 
             weeks: [
-                { w: "19", d: "27 apr - 3 mei", task: "Di: 45m Jog • Do: 14km Tempo • Zo: 25km Wandelen", note: "" },
+                { w: "18", d: "27 apr - 3 mei", task: "Di: 45m Jog • Do: 14km Tempo • Zo: 25km Wandelen", note: "" },
                 { w: "19", d: "4 - 10 mei", task: "Di: 50m Jog • Do: 14km Tempo • Zo: 40km Wandelen", note: "🎯 40KM" },
                 { w: "20", d: "11 - 17 mei", task: "Di: 50m Jog • Do: Kracht • Zo: 20km Herstel", note: "" },
                 { w: "21", d: "18 - 24 mei", task: "Di: Interval • Do: 14km Tempo • Zo: 42km Wandelen", note: "🎯 MARATHON" },
                 { w: "22", d: "25 - 31 mei", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" },
                 { w: "23", d: "1 - 7 juni", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 50km Wandelen", note: "🎯 50KM" },
-                { w: "24, d: "8 - 14 juni", task: "Di: 60m Jog • Do: 14km Tempo • Zo: 35km Wandelen", note: "" },
-                { w: "25, d: "15 - 21 juni", task: "Di: Interval • Do: 10km Los • Zo: 25km Wandelen", note: "" },
+                { w: "24", d: "8 - 14 juni", task: "Di: 60m Jog • Do: 14km Tempo • Zo: 35km Wandelen", note: "" },
+                { w: "25", d: "15 - 21 juni", task: "Di: Interval • Do: 10km Los • Zo: 25km Wandelen", note: "" },
                 { w: "26", d: "22 - 28 juni", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km NACHT", note: "🌙 NACHT" }
             ]
         },
@@ -659,42 +659,6 @@ const GREETINGS = [
         loadData();
         loadTheme();
         showWelcomeMessage();
-        // ==================== CELEBRATION EFFECT ====================
-function doCelebration() {
-    const container = document.getElementById('celebrationContainer');
-    if (!container) return;
-
-    // Aantal deeltjes dat we willen laten vliegen
-    const numParticles = 30; 
-    const colors = ['#f39c12', '#48bb78', '#1a2a6c', '#b21f1f']; // Verschillende kleuren voor de deeltjes
-
-    for (let i = 0; i < numParticles; i++) {
-        const particle = document.createElement('div');
-        particle.classList.add('celebration-particle');
-        
-        // Geef elk deeltje een willekeurige kleur
-        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        
-        // Startpunt van de animatie (onderaan in het midden van het scherm)
-        particle.style.left = '50%'; 
-        particle.style.bottom = '0%'; 
-
-        // Willekeurige richting en afstand voor de animatie
-        const xOffset = (Math.random() - 0.5) * 300; // -150px tot 150px horizontaal
-        const yOffset = - (Math.random() * 200 + 100); // Omhoog bewegen, tussen -100px en -300px
-
-        // Gebruik CSS custom properties om unieke animaties te maken
-        particle.style.setProperty('--x', `${xOffset}px`);
-        particle.style.setProperty('--y', `${yOffset}px`);
-
-        container.appendChild(particle);
-
-        // Verwijder het deeltje na de animatie om het DOM schoon te houden
-        particle.addEventListener('animationend', () => {
-            particle.remove();
-        });
-    }
-}
         document.getElementById('tDate').valueAsDate = new Date();
         renderAll();
         renderExercises();
@@ -863,6 +827,42 @@ function doCelebration() {
         setTimeout(() => { 
             notif.style.display = 'none'; 
         }, 5000);
+    }
+}
+
+function doCelebration() {
+    const container = document.getElementById('celebrationContainer');
+    if (!container) return;
+
+    // Aantal deeltjes dat we willen laten vliegen
+    const numParticles = 30; 
+    const colors = ['#f39c12', '#48bb78', '#1a2a6c', '#b21f1f']; // Verschillende kleuren voor de deeltjes
+
+    for (let i = 0; i < numParticles; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('celebration-particle');
+        
+        // Geef elk deeltje een willekeurige kleur
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Startpunt van de animatie (onderaan in het midden van het scherm)
+        particle.style.left = '50%'; 
+        particle.style.bottom = '0%'; 
+
+        // Willekeurige richting en afstand voor de animatie
+        const xOffset = (Math.random() - 0.5) * 300; // -150px tot 150px horizontaal
+        const yOffset = - (Math.random() * 200 + 100); // Omhoog bewegen, tussen -100px en -300px
+
+        // Gebruik CSS custom properties om unieke animaties te maken
+        particle.style.setProperty('--x', `${xOffset}px`);
+        particle.style.setProperty('--y', `${yOffset}px`);
+
+        container.appendChild(particle);
+
+        // Verwijder het deeltje na de animatie om het DOM schoon te houden
+        particle.addEventListener('animationend', () => {
+            particle.remove();
+        });
     }
 }
     
@@ -1049,6 +1049,7 @@ function doCelebration() {
 </script>
 </body>
 </html>
+
 
 
 
