@@ -271,32 +271,22 @@
             } 
         }
 
-/* Stijl voor de feest-deeltjes (bijv. confetti of ballonnen) */
+/* Stijl voor de feest-deeltjes */
 .celebration-particle {
     position: absolute;
     width: 10px;
     height: 10px;
-    background-color: var(--accent); /* Standaard accentkleur */
     border-radius: 50%;
     opacity: 0;
-    transform: scale(0);
-    animation: celebrate-up 1.5s forwards ease-out; /* Animatie die we zo maken */
+    animation: celebrate-up 1.5s forwards ease-out;
+    pointer-events: none;
+    z-index: 9999;
 }
 
-/* Animatie voor de feest-deeltjes */
-@keyframes celebrate-up {
-    0% {
-        opacity: 0;
-        transform: translate(0, 0) scale(0);
-    }
-    20% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    100% {
-        opacity: 0;
-        transform: translate(var(--x), var(--y)) scale(0.2); /* Beweeg en krimp */
-    }
+@keyframes celebrate-up { 
+    0% { opacity: 0; transform: translate(0, 0) scale(0); }
+    20% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.2); }
 }
         
         .phase-header { 
@@ -411,6 +401,7 @@
 <body>
 
     <div id="notif" class="notification"></div>
+    <div id="celebrationContainer" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></div>
 <div class="header">
     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
@@ -423,8 +414,7 @@
 
 <div class="container">
     
-    <div id="celebrationContainer" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></div>
-    
+     
     <!-- DASHBOARD TAB -->
     <div id="dash" class="tab-content active">
         <div class="card">
@@ -833,36 +823,18 @@ const GREETINGS = [
 function doCelebration() {
     const container = document.getElementById('celebrationContainer');
     if (!container) return;
-
-    // Aantal deeltjes dat we willen laten vliegen
-    const numParticles = 30; 
-    const colors = ['#f39c12', '#48bb78', '#1a2a6c', '#b21f1f']; // Verschillende kleuren voor de deeltjes
-
-    for (let i = 0; i < numParticles; i++) {
-        const particle = document.createElement('div');
-        particle.classList.add('celebration-particle');
-        
-        // Geef elk deeltje een willekeurige kleur
-        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        
-        // Startpunt van de animatie (onderaan in het midden van het scherm)
-        particle.style.left = '50%'; 
-        particle.style.bottom = '0%'; 
-
-        // Willekeurige richting en afstand voor de animatie
-        const xOffset = (Math.random() - 0.5) * 300; // -150px tot 150px horizontaal
-        const yOffset = - (Math.random() * 200 + 100); // Omhoog bewegen, tussen -100px en -300px
-
-        // Gebruik CSS custom properties om unieke animaties te maken
-        particle.style.setProperty('--x', `${xOffset}px`);
-        particle.style.setProperty('--y', `${yOffset}px`);
-
-        container.appendChild(particle);
-
-        // Verwijder het deeltje na de animatie om het DOM schoon te houden
-        particle.addEventListener('animationend', () => {
-            particle.remove();
-        });
+    const colors = ['#f39c12', '#48bb78', '#1a2a6c', '#b21f1f'];
+    for (let i = 0; i < 35; i++) {
+        const p = document.createElement('div');
+        p.classList.add('celebration-particle');
+        p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        p.style.left = '50%'; p.style.bottom = '10%';
+        const x = (Math.random() - 0.5) * 350;
+        const y = -(Math.random() * 250 + 150);
+        p.style.setProperty('--x', `${x}px`);
+        p.style.setProperty('--y', `${y}px`);
+        container.appendChild(p);
+        p.addEventListener('animationend', () => p.remove());
     }
 }
     
@@ -1049,6 +1021,7 @@ function doCelebration() {
 </script>
 </body>
 </html>
+
 
 
 
