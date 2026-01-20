@@ -355,10 +355,34 @@
         body.dark-mode .week-title {
             color: var(--accent);
         }
+        /* Banner Stijl */
+.notification {
+    position: fixed; 
+    top: 15px; 
+    left: 15px; 
+    right: 15px; 
+    background: var(--accent); 
+    color: white; 
+    padding: 15px; 
+    border-radius: 15px; 
+    z-index: 2000; 
+    display: none; /* Standaard onzichtbaar */
+    text-align: center; 
+    font-weight: bold; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    animation: slideIn 0.5s ease-out;
+}
+
+/* Animatie om hem van boven naar binnen te laten schuiven */
+@keyframes slideIn { 
+    from { transform: translateY(-100px); } 
+    to { transform: translateY(0); } 
+}
     </style>
 </head>
 <body>
 
+    <div id="notif" class="notification"></div>
 <div class="header">
     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
@@ -754,27 +778,20 @@ const GREETINGS = [
     }
 
     function showWelcomeMessage() {
-    // 1. Kies een willekeurige zin
-    const randomText = GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
-    
-    // 2. Bepaal of het ochtend, middag of avond is
+    const text = GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
     const hour = new Date().getHours();
-    let timeOfDay = "Goedenavond";
-    if (hour < 12) timeOfDay = "Goeiemorgen";
-    else if (hour < 18) timeOfDay = "Goeiemiddag";
-
-    const fullMessage = `${timeOfDay}! ${randomText}`;
-
-    // 3. Zoek de notificatiebalk en zet de tekst erin
-    const notifEl = document.getElementById('notif');
-    if (notifEl) {
-        notifEl.innerText = fullMessage;
-        notifEl.style.display = 'block';
-        notifEl.style.background = 'var(--accent)'; // De oranje kleur
+    let time = "Goedenavond";
+    if(hour < 12) time = "Goeiemorgen";
+    else if(hour < 18) time = "Goeiemiddag";
+    
+    const notif = document.getElementById('notif'); // Hij zoekt het uithangbord uit Stap 1
+    if(notif) {
+        notif.innerText = `${time}! ${text}`;
+        notif.style.display = 'block'; // Maak hem zichtbaar
         
-        // 4. Na 5 seconden (5000 milliseconden) verbergen we het weer
-        setTimeout(() => {
-            notifEl.style.display = 'none';
+        // Na 5 seconden (5000ms) weer wegdoen
+        setTimeout(() => { 
+            notif.style.display = 'none'; 
         }, 5000);
     }
 }
@@ -962,6 +979,7 @@ const GREETINGS = [
 </script>
 </body>
 </html>
+
 
 
 
