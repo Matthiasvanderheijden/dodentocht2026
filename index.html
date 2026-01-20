@@ -3,259 +3,878 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Doto 2026 Ultimate Mobile</title>
+    <title>Dodentocht 2026 Mobile</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Doto 2026">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/854/854868.png">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary: #1a2a6c; --secondary: #b21f1f; --accent: #f39c12;
-            --bg: #f0f2f5; --card-bg: #ffffff; --text: #1a202c;
+            --primary: #1a2a6c;
+            --secondary: #b21f1f;
+            --accent: #f39c12;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text: #1a202c;
             --safe-bottom: env(safe-area-inset-bottom);
         }
-        body.dark-mode { --bg: #121212; --card-bg: #1e1e1e; --text: #e8e8e8; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); color: var(--text); padding-bottom: calc(90px + var(--safe-bottom)); }
+
+        body.dark-mode {
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #e8e8e8;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        body {
+            font-family: -apple-system, system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            padding-bottom: calc(80px + var(--safe-bottom));
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px 20px;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .header h1 { 
+            font-size: 1.6rem; 
+            letter-spacing: -1px; 
+            margin-bottom: 8px;
+        }
         
-        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 25px 20px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; position: sticky; top: 0; z-index: 100; }
-        .container { padding: 15px; }
-        .card { background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .countdown { 
+            font-size: 0.85rem; 
+            font-weight: bold; 
+            opacity: 0.9; 
+        }
+
+        .container { 
+            padding: 15px; 
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: background-color 0.3s;
+        }
+
+        .card h2 { 
+            font-size: 1.1rem; 
+            margin-bottom: 15px; 
+            border-left: 4px solid var(--accent); 
+            padding-left: 10px; 
+        }
+
+        /* Progress */
+        .progress-container { 
+            height: 28px; 
+            background: #e2e8f0; 
+            border-radius: 14px; 
+            overflow: hidden; 
+            margin: 10px 0; 
+        }
         
-        /* Stats & Progress */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-box { background: var(--card-bg); padding: 15px; border-radius: 18px; text-align: center; border-bottom: 3px solid var(--primary); }
-        .stat-label { font-size: 0.65rem; color: #718096; font-weight: bold; text-transform: uppercase; }
-        .stat-value { font-size: 1.3rem; font-weight: 800; display: block; }
-        .progress-container { height: 28px; background: #e2e8f0; border-radius: 14px; overflow: hidden; margin: 10px 0; position: relative; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #48bb78, #38a169); width: 0%; transition: width 1s; }
-        .progress-text { position: absolute; width: 100%; text-align: center; line-height: 28px; font-size: 0.8rem; font-weight: bold; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .progress-bar { 
+            height: 100%; 
+            background: linear-gradient(90deg, #48bb78, #38a169); 
+            width: 0%; 
+            transition: width 1s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-size: 0.8rem; 
+            font-weight: bold; 
+        }
+
+        /* Stats Grid */
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            margin-bottom: 15px; 
+        }
+        
+        .stat-box { 
+            background: var(--card-bg); 
+            padding: 15px; 
+            border-radius: 18px; 
+            text-align: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+            border-bottom: 3px solid var(--primary); 
+            transition: background-color 0.3s;
+        }
+        
+        .stat-label { 
+            font-size: 0.65rem; 
+            text-transform: uppercase; 
+            color: #718096; 
+            font-weight: bold; 
+        }
+        
+        .stat-value { 
+            font-size: 1.3rem; 
+            font-weight: 800; 
+            display: block; 
+            margin-top: 5px;
+        }
 
         /* Navigation */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; padding: 10px 0 calc(10px + var(--safe-bottom)); box-shadow: 0 -2px 15px rgba(0,0,0,0.1); z-index: 1000; }
-        .nav-item { flex: 1; border: none; background: none; color: #718096; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; }
-        .nav-item.active { color: var(--primary); font-weight: bold; }
-        .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; 
+            left: 0; 
+            right: 0;
+            background: var(--card-bg);
+            display: flex;
+            padding: 10px 0 calc(10px + var(--safe-bottom));
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
 
-        /* Buttons & Forms */
-        .btn-main { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 15px; font-weight: bold; font-size: 1rem; }
-        input, select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; background: var(--card-bg); color: var(--text); font-size: 1rem; }
+        .nav-item { 
+            flex: 1; 
+            border: none; 
+            background: none; 
+            color: #718096; 
+            font-size: 0.7rem; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .nav-item.active { 
+            color: var(--primary); 
+            font-weight: bold; 
+        }
+        
+        .nav-icon { 
+            font-size: 1.5rem; 
+            margin-bottom: 2px; 
+        }
 
-        /* Schema Specifiek */
-        .phase-header { background: var(--primary); color: white; padding: 12px 15px; border-radius: 12px; font-size: 0.75rem; margin: 20px 0 10px; font-weight: bold; text-align: center; }
-        .list-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid #edf2f7; }
-        .badge { font-size: 0.6rem; background: var(--accent); color: white; padding: 3px 8px; border-radius: 10px; font-weight: bold; white-space: nowrap; margin-left: 10px; }
-        .task-detail { font-size: 0.8rem; color: #4a5568; margin-top: 4px; line-height: 1.4; }
+        /* Lists */
+        .list-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 12px 0; 
+            border-bottom: 1px solid #edf2f7; 
+        }
+        
+        .list-info h4 { 
+            font-size: 0.95rem; 
+            margin-bottom: 4px;
+        }
+        
+        .list-info p { 
+            font-size: 0.75rem; 
+            color: #718096; 
+        }
+
+        /* Form Elements */
+        .form-field { 
+            margin-bottom: 12px; 
+        }
+        
+        label { 
+            display: block; 
+            font-size: 0.75rem; 
+            font-weight: bold; 
+            margin-bottom: 4px; 
+            color: #4a5568; 
+        }
+        
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 10px; 
+            border: 1px solid #cbd5e0; 
+            background: var(--card-bg); 
+            color: var(--text); 
+            font-size: 1rem;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-main { 
+            width: 100%; 
+            padding: 15px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            font-size: 1rem; 
+            margin-top: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn-main:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+        }
+        
+        .btn-danger {
+            background: var(--secondary);
+        }
+
+        .tab-content { 
+            display: none; 
+        }
+        
+        .tab-content.active { 
+            display: block; 
+            animation: fadeIn 0.3s; 
+        }
+        
+        @keyframes fadeIn { 
+            from { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            } 
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
+        }
+
+        .phase-header { 
+            background: var(--primary); 
+            color: white; 
+            padding: 10px 15px; 
+            border-radius: 10px; 
+            font-size: 0.8rem; 
+            margin: 20px 0 10px; 
+            font-weight: bold; 
+        }
+        
+        .schedule-week {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent);
+            transition: background-color 0.3s;
+        }
+        
+        .week-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .week-title {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        
+        .week-badge {
+            font-size: 0.65rem;
+            background: var(--accent);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        
+        .week-dates {
+            font-size: 0.7rem;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+        
+        .week-tasks {
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .theme-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .theme-btn:active {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        body.dark-mode .schedule-week {
+            border-left-color: var(--accent);
+        }
+        
+        body.dark-mode .week-title {
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
-            <h1 style="font-size: 1.3rem;">DOTO 2026</h1>
-            <div id="countdown" style="font-size: 0.75rem; opacity: 0.9;"></div>
+            <h1>🎯 DODENTOCHT 2026</h1>
+            <div id="countdown" class="countdown">Laden...</div>
         </div>
-        <button onclick="toggleTheme()" style="background: rgba(255,255,255,0.2); border: none; width: 35px; height: 35px; border-radius: 50%; color: white;">🌓</button>
+        <button onclick="toggleTheme()" class="theme-btn">🌓</button>
     </div>
 </div>
 
 <div class="container">
+    
+    <!-- DASHBOARD TAB -->
     <div id="dash" class="tab-content active">
         <div class="card">
             <h2>🎯 Voortgang naar 800km</h2>
             <div class="progress-container">
-                <div class="progress-text" id="progLabel">0%</div>
-                <div id="progressBar" class="progress-bar"></div>
+                <div id="progressBar" class="progress-bar">0%</div>
             </div>
-            <p id="remKm" style="text-align: center; font-size: 0.7rem; color: #718096; margin-top: 5px;"></p>
+            <p id="progText" style="text-align: center; font-size: 0.75rem; color: #718096; margin-top: 5px;"></p>
         </div>
+
         <div class="stats-grid">
-            <div class="stat-box"><span class="stat-label">Totaal KM</span><span id="statKm" class="stat-value">0</span></div>
-            <div class="stat-box"><span class="stat-label">Snelheid</span><span id="statSpeed" class="stat-value">0</span></div>
-            <div class="stat-box"><span class="stat-label">Sessies</span><span id="statCount" class="stat-value">0</span></div>
-            <div class="stat-box"><span class="stat-label">Knie Gem.</span><span id="statKnee" class="stat-value">0</span></div>
+            <div class="stat-box">
+                <span class="stat-label">Totaal KM</span>
+                <span id="totalKm" class="stat-value">0</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Snelheid</span>
+                <span id="avgSpeed" class="stat-value">0</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Sessies</span>
+                <span id="totalSess" class="stat-value">0</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Knie Score</span>
+                <span id="kneeAvg" class="stat-value">0</span>
+            </div>
         </div>
-        <div class="card" style="margin-top:15px; height: 250px;">
-            <canvas id="mainChart"></canvas>
+
+        <div class="card">
+            <h2>📈 Evolutie</h2>
+            <canvas id="speedChart" style="height: 200px;"></canvas>
         </div>
     </div>
 
+    <!-- LOG TAB -->
     <div id="log" class="tab-content">
         <div class="card">
-            <h2>📝 Training Loggen</h2>
-            <input type="date" id="inDate">
-            <div style="display: flex; gap: 10px;">
-                <input type="number" id="inKm" placeholder="KM Afstand" step="0.1">
-                <input type="number" id="inMin" placeholder="Minuten">
+            <h2>📝 Nieuwe Log</h2>
+            <div class="form-field">
+                <label>Datum</label>
+                <input type="date" id="tDate">
             </div>
-            <select id="inKnee">
-                <option value="0">Knie Score (0 = Geen pijn, 10 = Erg)</option>
-                <script>for(let i=1; i<=10; i++) document.write(`<option value="${i}">${i}</option>`)</script>
-            </select>
-            <button class="btn-main" onclick="addEntry()">OPSLAAN</button>
+            <div style="display: flex; gap: 10px;">
+                <div class="form-field" style="flex: 2;">
+                    <label>KM</label>
+                    <input type="number" id="tKm" step="0.1" placeholder="Afstand">
+                </div>
+                <div class="form-field" style="flex: 2;">
+                    <label>Minuten</label>
+                    <input type="number" id="tMin" placeholder="Duur">
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <div class="form-field" style="flex: 1;">
+                    <label>Knie (1-10)</label>
+                    <input type="number" id="tKnee" value="0" min="0" max="10">
+                </div>
+                <div class="form-field" style="flex: 1;">
+                    <label>Nacht?</label>
+                    <select id="tNight">
+                        <option value="false">Nee</option>
+                        <option value="true">Ja 🌙</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-main" onclick="saveTraining()">💾 LOG OPSLAAN</button>
         </div>
-        <div id="history"></div>
+
+        <div class="card">
+            <h2>📋 Geschiedenis</h2>
+            <div id="historyList"></div>
+        </div>
     </div>
 
+    <!-- SCHEMA TAB -->
     <div id="sch" class="tab-content">
         <div class="card">
             <h2>📅 Trainingsschema</h2>
-            <div id="scheduleBox"></div>
+            <div id="mobileSchedule"></div>
         </div>
     </div>
+
+    <!-- LEADERBOARD TAB -->
+    <div id="lead" class="tab-content">
+        <div class="card">
+            <h2>🏆 Leaderboard</h2>
+            <div id="friendsList"></div>
+            <hr style="margin: 15px 0; opacity: 0.1;">
+            <div class="form-field">
+                <label>Vriend toevoegen (Code)</label>
+                <input type="text" id="friendCode" placeholder="Plak code hier">
+            </div>
+            <button class="btn-main btn-secondary" onclick="addFriend()">➕ VRIEND TOEVOEGEN</button>
+        </div>
+        
+        <div class="card">
+            <h2>⚙️ Beheer</h2>
+            <button class="btn-main" style="background: #718096; font-size: 0.8rem; margin-bottom: 10px;" onclick="exportData()">📥 DOWNLOAD BACKUP</button>
+            <button class="btn-main btn-danger" style="font-size: 0.8rem;" onclick="clearAllData()">🗑️ ALLES WISSEN</button>
+        </div>
+    </div>
+
 </div>
 
 <nav class="bottom-nav">
-    <button class="nav-item active" onclick="switchTab('dash', this)"><span class="nav-icon">📊</span>Stats</button>
-    <button class="nav-item" onclick="switchTab('log', this)"><span class="nav-icon">📝</span>Log</button>
-    <button class="nav-item" onclick="switchTab('sch', this)"><span class="nav-icon">📅</span>Schema</button>
+    <button class="nav-item active" onclick="switchTab('dash', this)">
+        <span class="nav-icon">📊</span><span>Stats</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('log', this)">
+        <span class="nav-icon">📝</span><span>Log</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('sch', this)">
+        <span class="nav-icon">📅</span><span>Schema</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('lead', this)">
+        <span class="nav-icon">🏆</span><span>Groep</span>
+    </button>
 </nav>
 
 <script>
-    const DB_NAME = 'dodentocht_v10_ultimate';
-    const TARGET = 800;
-    const EVENT = new Date('2026-08-14');
+    const STORAGE_KEY = 'dodentocht_v10_ultimate';
+    const FRIENDS_KEY = 'dodentocht_v10_friends';
+    const NAME_KEY = 'dodentocht_v10_name';
+    const THEME_KEY = 'dodentocht_v10_theme';
+    const TARGET_KM = 800;
+    const EVENT_DATE = new Date('2026-08-14');
 
-    const SCHEDULE_DATA = [
-        { phase: "FASE 1: BASIS & KNIE HERSTEL (JAN - FEB)", weeks: [
-            { w: "1", d: "29 dec - 4 jan", task: "Di: Rust • Do: 1 jan 5km Tempo • Zo: 12km Wandelen", note: "🎯 START" },
-            { w: "2", d: "5 - 11 jan", task: "Di: 20m Jog • Do: Kracht • Zo: 14km Wandelen", note: "" },
-            { w: "3", d: "12 - 18 jan", task: "Di: 20m Jog • Do: 6km Tempo • Zo: 16km Wandelen", note: "" },
-            { w: "4", d: "19 - 25 jan", task: "Di: Rust • Do: Kracht • Zo: 10km Herstel", note: "💤 HERSTEL" },
-            { w: "5", d: "26 jan - 1 feb", task: "Di: 25m Jog • Do: 7km Tempo • Zo: 18km Wandelen", note: "" },
-            { w: "6", d: "2 - 8 feb", task: "Di: 30m Jog • Do: Kracht • Zo: 20km Wandelen", note: "🎯 20KM" },
-            { w: "7", d: "9 - 15 feb", task: "Di: 30m Jog • Do: 8km Tempo • Zo: 22km Wandelen", note: "" },
-            { w: "8", d: "16 - 22 feb", task: "Di: Rust • Do: Kracht • Zo: 12km Herstel", note: "💤 HERSTEL" }
-        ]},
-        { phase: "FASE 2: AFSTAND OPBOUW (MRT - APR)", weeks: [
-            { w: "9", d: "23 feb - 1 mrt", task: "Di: 35m Jog • Do: 8km Tempo • Zo: 25km Wandelen", note: "" },
-            { w: "10", d: "2 - 8 mrt", task: "Di: 35m Jog • Do: Kracht • Zo: 15km Herstel", note: "" },
-            { w: "11", d: "9 - 15 mrt", task: "Di: 40m Jog • Do: 10km Tempo • Zo: 28km Wandelen", note: "" },
-            { w: "12", d: "16 - 22 mrt", task: "Di: Rust • Do: Kracht • Zo: 12km Herstel", note: "💤 HERSTEL" },
-            { w: "13", d: "23 - 29 mrt", task: "Di: 40m Jog • Do: 10km Tempo • Zo: 32km Wandelen", note: "🎯 30KM+" },
-            { w: "14", d: "30 mrt - 5 apr", task: "Di: 45m Jog • Do: Kracht • Zo: 20km Wandelen", note: "" },
-            { w: "15", d: "6 - 12 apr", task: "Di: 45m Jog • Do: 12km Tempo • Zo: 35km Wandelen", note: "" },
-            { w: "16", d: "13 - 19 apr", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" }
-        ]},
-        { phase: "FASE 3: PIEK VOLUME (MEI - JUN)", weeks: [
-            { w: "18", d: "4 - 10 mei", task: "Di: 50m Jog • Do: 14km Tempo • Zo: 40km Wandelen", note: "🎯 40KM" },
-            { w: "19", d: "11 - 17 mei", task: "Di: 50m Jog • Do: Kracht • Zo: 20km Herstel", note: "" },
-            { w: "20", d: "18 - 24 mei", task: "Di: Interval • Do: 14km Tempo • Zo: 42km Wandelen", note: "🎯 MARATHON" },
-            { w: "21", d: "25 - 31 mei", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" },
-            { w: "22", d: "1 - 7 juni", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 50km Wandelen", note: "🎯 50KM" },
-            { w: "24", d: "15 - 21 juni", task: "Di: Interval • Do: 10km Los • Zo: 25km Wandelen", note: "" },
-            { w: "26", d: "22 - 28 juni", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km NACHT", note: "🌙 NACHT" }
-        ]},
-        { phase: "FASE 4: FINALE & TAPER (JUL - AUG)", weeks: [
-            { w: "27", d: "29 jun - 5 jul", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 40km Wandelen", note: "" },
-            { w: "28", d: "6 - 12 juli", task: "Di: Interval • Do: Kracht • Zo: 20km Herstel", note: "💤 HERSTEL" },
-            { w: "29", d: "13 - 19 juli", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 60km TEST", note: "🎯 60KM" },
-            { w: "30", d: "20 - 26 juli", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km Wandelen", note: "" },
-            { w: "31", d: "27 jul - 2 aug", task: "Di: 30m Jog • Do: 8km Los • Zo: 20km Wandelen", note: "📉 TAPER" },
-            { w: "32", d: "3 - 9 aug", task: "Di: 20m Jog • Do: Kracht • Zo: 12km Los", note: "📉 TAPER" },
-            { w: "33", d: "10 - 14 aug", task: "Di: Rust • Do: 5km Los • Zo: 14 AUG: 100KM!", note: "🏆 D-DAY" }
-        ]}
-    ];
-
-    let data = JSON.parse(localStorage.getItem(DB_NAME)) || [];
+    let trainings = [];
+    let friends = [];
+    let userName = '';
     let chart = null;
 
+    // VOLLEDIG TRAININGSSCHEMA - ALLE 33 WEKEN
+    const SCHEDULE_DATA = [
+        { 
+            phase: "FASE 1: BASIS & KNIE HERSTEL (JAN - FEB)", 
+            weeks: [
+                { w: "1", d: "29 dec - 4 jan", task: "Di: Rust • Do: 1 jan 5km Tempo • Zo: 12km Wandelen", note: "🎯 START" },
+                { w: "2", d: "5 - 11 jan", task: "Di: 20m Jog • Do: Kracht • Zo: 14km Wandelen", note: "" },
+                { w: "3", d: "12 - 18 jan", task: "Di: 20m Jog • Do: 6km Tempo • Zo: 16km Wandelen", note: "" },
+                { w: "4", d: "19 - 25 jan", task: "Di: Rust • Do: Kracht • Zo: 10km Herstel", note: "💤 HERSTEL" },
+                { w: "5", d: "26 jan - 1 feb", task: "Di: 25m Jog • Do: 7km Tempo • Zo: 18km Wandelen", note: "" },
+                { w: "6", d: "2 - 8 feb", task: "Di: 30m Jog • Do: Kracht • Zo: 20km Wandelen", note: "🎯 20KM" },
+                { w: "7", d: "9 - 15 feb", task: "Di: 30m Jog • Do: 8km Tempo • Zo: 22km Wandelen", note: "" },
+                { w: "8", d: "16 - 22 feb", task: "Di: Rust • Do: Kracht • Zo: 12km Herstel", note: "💤 HERSTEL" }
+            ]
+        },
+        { 
+            phase: "FASE 2: AFSTAND OPBOUW (MRT - APR)", 
+            weeks: [
+                { w: "9", d: "23 feb - 1 mrt", task: "Di: 35m Jog • Do: 8km Tempo • Zo: 25km Wandelen", note: "" },
+                { w: "10", d: "2 - 8 mrt", task: "Di: 35m Jog • Do: Kracht • Zo: 15km Herstel", note: "" },
+                { w: "11", d: "9 - 15 mrt", task: "Di: 40m Jog • Do: 10km Tempo • Zo: 28km Wandelen", note: "" },
+                { w: "12", d: "16 - 22 mrt", task: "Di: Rust • Do: Kracht • Zo: 12km Herstel", note: "💤 HERSTEL" },
+                { w: "13", d: "23 - 29 mrt", task: "Di: 40m Jog • Do: 10km Tempo • Zo: 32km Wandelen", note: "🎯 30KM+" },
+                { w: "14", d: "30 mrt - 5 apr", task: "Di: 45m Jog • Do: Kracht • Zo: 20km Wandelen", note: "" },
+                { w: "15", d: "6 - 12 apr", task: "Di: 45m Jog • Do: 12km Tempo • Zo: 35km Wandelen", note: "" },
+                { w: "16", d: "13 - 19 apr", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" }
+            ]
+        },
+        { 
+            phase: "FASE 3: PIEK VOLUME (MEI - JUN)", 
+            weeks: [
+                { w: "18", d: "4 - 10 mei", task: "Di: 50m Jog • Do: 14km Tempo • Zo: 40km Wandelen", note: "🎯 40KM" },
+                { w: "19", d: "11 - 17 mei", task: "Di: 50m Jog • Do: Kracht • Zo: 20km Herstel", note: "" },
+                { w: "20", d: "18 - 24 mei", task: "Di: Interval • Do: 14km Tempo • Zo: 42km Wandelen", note: "🎯 MARATHON" },
+                { w: "21", d: "25 - 31 mei", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" },
+                { w: "22", d: "1 - 7 juni", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 50km Wandelen", note: "🎯 50KM" },
+                { w: "24", d: "15 - 21 juni", task: "Di: Interval • Do: 10km Los • Zo: 25km Wandelen", note: "" },
+                { w: "26", d: "22 - 28 juni", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km NACHT", note: "🌙 NACHT" }
+            ]
+        },
+        { 
+            phase: "FASE 4: FINALE & TAPER (JUL - AUG)", 
+            weeks: [
+                { w: "27", d: "29 jun - 5 jul", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 40km Wandelen", note: "" },
+                { w: "28", d: "6 - 12 juli", task: "Di: Interval • Do: Kracht • Zo: 20km Herstel", note: "💤 HERSTEL" },
+                { w: "29", d: "13 - 19 juli", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 60km TEST", note: "🔥 60KM" },
+                { w: "30", d: "20 - 26 juli", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km Wandelen", note: "" },
+                { w: "31", d: "27 jul - 2 aug", task: "Di: 30m Jog • Do: 8km Los • Zo: 20km Wandelen", note: "📉 TAPER" },
+                { w: "32", d: "3 - 9 aug", task: "Di: 20m Jog • Do: Kracht • Zo: 12km Los", note: "📉 TAPER" },
+                { w: "33", d: "10 - 14 aug", task: "Di: Rust • Do: 5km Los • Zo: 14 AUG: 100KM!", note: "🏆 D-DAY" }
+            ]
+        }
+    ];
+
+    // ==================== INITIALIZATION ====================
     function init() {
-        document.getElementById('inDate').valueAsDate = new Date();
-        render();
-        renderSchedule();
+        loadData();
+        loadTheme();
+        document.getElementById('tDate').valueAsDate = new Date();
+        renderAll();
         updateCountdown();
+        renderSchedule();
+        setInterval(updateCountdown, 60000);
     }
 
+    function loadData() {
+        trainings = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        friends = JSON.parse(localStorage.getItem(FRIENDS_KEY)) || [];
+        userName = localStorage.getItem(NAME_KEY) || '';
+    }
+
+    function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(trainings));
+        localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
+        if (userName) localStorage.setItem(NAME_KEY, userName);
+    }
+
+    function loadTheme() {
+        const theme = localStorage.getItem(THEME_KEY);
+        if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    }
+
+    // ==================== TAB SWITCHING ====================
     function switchTab(id, btn) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         btn.classList.add('active');
+        
         if(id === 'dash') renderChart();
+        if(id === 'lead') renderLeaderboard();
     }
 
-    function addEntry() {
-        const km = parseFloat(document.getElementById('inKm').value);
-        const min = parseInt(document.getElementById('inMin').value);
-        if(!km || !min) return alert("Vul afstand en tijd in!");
+    // ==================== THEME TOGGLE ====================
+    function toggleTheme() { 
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+    }
+
+    // ==================== COUNTDOWN ====================
+    function updateCountdown() {
+        const diff = EVENT_DATE - new Date();
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        document.getElementById('countdown').innerText = `⏰ Nog ${days} dagen tot D-day`;
+    }
+
+    // ==================== SAVE TRAINING ====================
+    function saveTraining() {
+        const km = parseFloat(document.getElementById('tKm').value);
+        const min = parseInt(document.getElementById('tMin').value);
         
-        data.push({
+        if(!km || km <= 0) {
+            alert('⚠️ Voer een geldige afstand in!');
+            return;
+        }
+        if(!min || min <= 0) {
+            alert('⚠️ Voer een geldige duur in!');
+            return;
+        }
+
+        const t = {
             id: Date.now(),
-            date: document.getElementById('inDate').value,
-            km: km, min: min,
-            knee: parseInt(document.getElementById('inKnee').value),
+            date: document.getElementById('tDate').value,
+            km: km,
+            min: min,
+            knee: parseInt(document.getElementById('tKnee').value) || 0,
+            night: document.getElementById('tNight').value === 'true',
             speed: (km / (min/60)).toFixed(2)
-        });
-        
-        localStorage.setItem(DB_NAME, JSON.stringify(data));
-        render();
+        };
+
+        trainings.push(t);
+        saveData();
+        renderAll();
         switchTab('dash', document.querySelector('.nav-item'));
+        
+        // Reset form
+        document.getElementById('tKm').value = '';
+        document.getElementById('tMin').value = '';
+        document.getElementById('tKnee').value = '0';
+        
+        alert('✅ Training opgeslagen!');
     }
 
-    function render() {
-        const total = data.reduce((s, x) => s + x.km, 0);
-        const avgKnee = data.length ? (data.reduce((s, x) => s + x.knee, 0) / data.length).toFixed(1) : 0;
-        const avgSpd = data.length ? (data.reduce((s, x) => s + parseFloat(x.speed), 0) / data.length).toFixed(1) : 0;
+    // ==================== DELETE TRAINING ====================
+    function delT(id) {
+        if(confirm('Training verwijderen?')) {
+            trainings = trainings.filter(x => x.id !== id);
+            saveData();
+            renderAll();
+        }
+    }
 
-        document.getElementById('statKm').innerText = total.toFixed(1);
-        document.getElementById('statCount').innerText = data.length;
-        document.getElementById('statKnee').innerText = avgKnee;
-        document.getElementById('statSpeed').innerText = avgSpd;
+    // ==================== RENDER FUNCTIONS ====================
+    function renderAll() {
+        const total = trainings.reduce((s, x) => s + x.km, 0);
+        const kneeAvg = trainings.length ? (trainings.reduce((s, x) => s + x.knee, 0) / trainings.length).toFixed(1) : 0;
+        
+        document.getElementById('totalKm').innerText = total.toFixed(1);
+        document.getElementById('totalSess').innerText = trainings.length;
+        document.getElementById('kneeAvg').innerText = kneeAvg;
+        
+        const avgSpd = trainings.length ? (trainings.reduce((s, x) => s + parseFloat(x.speed), 0) / trainings.length).toFixed(2) : 0;
+        document.getElementById('avgSpeed').innerText = avgSpd;
 
-        const p = Math.min((total/TARGET)*100, 100);
-        document.getElementById('progressBar').style.width = p + '%';
-        document.getElementById('progLabel').innerText = Math.round(p) + '%';
-        document.getElementById('remKm').innerText = `Nog ${(TARGET-total).toFixed(1)} km tot doel`;
+        const perc = Math.min((total / TARGET_KM) * 100, 100);
+        document.getElementById('progressBar').style.width = perc + '%';
+        document.getElementById('progressBar').innerText = Math.round(perc) + '%';
+        document.getElementById('progText').innerText = `Nog ${(TARGET_KM - total).toFixed(1)} km te gaan`;
 
-        const histHtml = data.slice().reverse().map(t => `
-            <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:12px;">
-                <div><b>${t.km}km</b> <small>(${t.date})</small><br><span style="font-size:0.75rem; color:#718096;">${t.speed}km/u • Knie: ${t.knee}/10</span></div>
-                <button onclick="del(${t.id})" style="border:none; background:none; font-size:1.2rem;">🗑️</button>
-            </div>`).join('');
-        document.getElementById('history').innerHTML = histHtml;
+        renderHistory();
         renderChart();
     }
 
+    function renderHistory() {
+        const html = trainings.slice().reverse().map(t => `
+            <div class="list-item">
+                <div class="list-info">
+                    <h4>${t.km} km ${t.night ? '🌙' : ''}</h4>
+                    <p>${t.date} • ${t.speed} km/u • Knie: ${t.knee}/10</p>
+                </div>
+                <button onclick="delT(${t.id})" class="delete-btn">🗑️</button>
+            </div>
+        `).join('');
+        document.getElementById('historyList').innerHTML = html || '<p style="font-size:0.8rem; text-align:center; color:#999; padding: 20px;">Nog geen trainingen.</p>';
+    }
+
     function renderSchedule() {
-        let h = '';
-        SCHEDULE_DATA.forEach(p => {
-            h += `<div class="phase-header">${p.phase}</div>`;
-            p.weeks.forEach(w => {
-                h += `
-                <div class="list-item">
-                    <div style="flex:1;">
-                        <div style="font-weight:bold; font-size:0.9rem;">Week ${w.w} <span style="font-weight:normal; font-size:0.75rem; color:#718096; margin-left:5px;">(${w.d})</span></div>
-                        <div class="task-detail">${w.task}</div>
+        let html = '';
+        SCHEDULE_DATA.forEach(phase => {
+            html += `<div class="phase-header">${phase.phase}</div>`;
+            phase.weeks.forEach(week => {
+                html += `
+                <div class="schedule-week">
+                    <div class="week-header">
+                        <div class="week-title">Week ${week.w}</div>
+                        ${week.note ? `<span class="week-badge">${week.note}</span>` : ''}
                     </div>
-                    ${w.note ? `<span class="badge">${w.note}</span>` : ''}
+                    <div class="week-dates">${week.d}</div>
+                    <div class="week-tasks">${week.task}</div>
                 </div>`;
             });
         });
-        document.getElementById('scheduleBox').innerHTML = h;
+        document.getElementById('mobileSchedule').innerHTML = html;
     }
 
     function renderChart() {
-        const ctx = document.getElementById('mainChart').getContext('2d');
+        const ctx = document.getElementById('speedChart').getContext('2d');
         if(chart) chart.destroy();
-        const last = data.slice(-7);
+        const last10 = trainings.slice(-10);
+        
+        if (last10.length === 0) {
+            return;
+        }
+        
         chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: last.map(x => x.date.split('-')[2]),
-                datasets: [{ label: 'Snelheid', data: last.map(x=>x.speed), borderColor: '#1a2a6c', backgroundColor: 'rgba(26,42,108,0.1)', fill: true, tension: 0.3 }]
+                labels: last10.map(t => t.date.split('-').slice(1).join('/')),
+                datasets: [{
+                    label: 'Snelheid (km/u)',
+                    data: last10.map(t => parseFloat(t.speed)),
+                    borderColor: '#1a2a6c',
+                    backgroundColor: 'rgba(26, 42, 108, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
             },
-            options: { responsive: true, maintainAspectRatio: false }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            }
         });
     }
 
-    function del(id) { if(confirm('Wissen?')) { data = data.filter(x=>x.id!==id); localStorage.setItem(DB_NAME, JSON.stringify(data)); render(); } }
-    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function updateCountdown() { document.getElementById('countdown').innerText = `⏰ Nog ${Math.floor((EVENT - new Date())/(1000*60*60*24))} dagen`; }
+    // ==================== LEADERBOARD ====================
+    function generateShareCode() {
+        if (!userName) return '';
+        
+        const total = trainings.reduce((s, x) => s + x.km, 0);
+        const timestamp = new Date().toISOString().split('T')[0];
+        return btoa(`${userName}|${total.toFixed(1)}|${timestamp}`);
+    }
 
+    function addFriend() {
+        const code = document.getElementById('friendCode').value.trim();
+        if (!code) {
+            alert('⚠️ Plak eerst een code!');
+            return;
+        }
+        
+        try {
+            const decoded = atob(code);
+            const parts = decoded.split('|');
+            
+            if (parts.length !== 3) {
+                throw new Error('Invalid format');
+            }
+            
+            const [name, km, timestamp] = parts;
+            
+            const existing = friends.findIndex(f => f.name === name);
+            if (existing !== -1) {
+                friends[existing] = { name, km: parseFloat(km), timestamp };
+                alert('✅ Vriend bijgewerkt!');
+            } else {
+                friends.push({ name, km: parseFloat(km), timestamp });
+                alert('✅ Vriend toegevoegd!');
+            }
+            
+            saveData();
+            renderLeaderboard();
+            document.getElementById('friendCode').value = '';
+            
+        } catch (e) {
+            alert('❌ Ongeldige code!');
+        }
+    }
+
+    function removeFriend(name) {
+        if (!confirm(`${name} verwijderen?`)) return;
+        
+        friends = friends.filter(f => f.name !== name);
+        saveData();
+        renderLeaderboard();
+    }
+
+    function renderLeaderboard() {
+        const myKm = trainings.reduce((s, x) => s + x.km, 0);
+        
+        let allUsers = [...friends];
+        
+        if (userName) {
+            allUsers.push({
+                name: userName + ' (JIJ)',
+                km: myKm,
+                timestamp: new Date().toISOString().split('T')[0],
+                isMe: true
+            });
+        }
+        
+        allUsers.sort((a, b) => b.km - a.km);
+        
+        let html = '';
+        if (allUsers.length === 0) {
+            html = '<p style="text-align: center; padding: 20px; color: #999;">Nog geen vrienden toegevoegd</p>';
+        } else {
+            allUsers.forEach((user, index) => {
+                const position = index + 1;
+                const medal = position === 1 ? '🥇' : position === 2 ? '🥈' : position === 3 ? '🥉' : position;
+                const style = user.isMe ? 'background: rgba(26, 42, 108, 0.1); border-left: 4px solid var(--primary);' : '';
+                
+                html += `
+                <div class="list-item" style="${style}">
+                    <div class="list-info">
+                        <h4>${medal} ${user.name}</h4>
+                        <p>${user.km.toFixed(1)} km • ${user.timestamp}</p>
+                    </div>
+                    ${!user.isMe ? `<button onclick="removeFriend('${user.name}')" class="delete-btn">🗑️</button>` : ''}
+                </div>`;
+            });
+        }
+        
+        document.getElementById('friendsList').innerHTML = html;
+    }
+
+    // ==================== EXPORT/IMPORT ====================
+    function exportData() {
+        const data = {
+            trainings,
+            friends,
+            userName,
+            exportDate: new Date().toISOString()
+        };
+        
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `dodentocht_backup_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        
+        URL.revokeObjectURL(url);
+        alert('📥 Backup gedownload!');
+    }
+
+    function clearAllData() {
+        if (!confirm('⚠️ WAARSCHUWING: Dit verwijdert ALLE data!\n\nWeet je het zeker?')) return;
+        
+        trainings = [];
+        friends = [];
+        userName = '';
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(FRIENDS_KEY);
+        localStorage.removeItem(NAME_KEY);
+        
+        renderAll();
+        renderLeaderboard();
+        alert('🗑️ Alle data gewist!');
+    }
+
+    // ==================== INITIALIZE ====================
     window.onload = init;
 </script>
 </body>
