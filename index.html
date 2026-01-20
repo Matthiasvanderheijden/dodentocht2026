@@ -1,4 +1,124 @@
-// VOLLEDIGE SCHEMA DATA
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Doto 2026 Ultimate Mobile</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/854/854868.png">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a2a6c; --secondary: #b21f1f; --accent: #f39c12;
+            --bg: #f0f2f5; --card-bg: #ffffff; --text: #1a202c;
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+        body.dark-mode { --bg: #121212; --card-bg: #1e1e1e; --text: #e8e8e8; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); color: var(--text); padding-bottom: calc(90px + var(--safe-bottom)); }
+        
+        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 25px 20px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; position: sticky; top: 0; z-index: 100; }
+        .container { padding: 15px; }
+        .card { background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        /* Stats & Progress */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-box { background: var(--card-bg); padding: 15px; border-radius: 18px; text-align: center; border-bottom: 3px solid var(--primary); }
+        .stat-label { font-size: 0.65rem; color: #718096; font-weight: bold; text-transform: uppercase; }
+        .stat-value { font-size: 1.3rem; font-weight: 800; display: block; }
+        .progress-container { height: 28px; background: #e2e8f0; border-radius: 14px; overflow: hidden; margin: 10px 0; position: relative; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #48bb78, #38a169); width: 0%; transition: width 1s; }
+        .progress-text { position: absolute; width: 100%; text-align: center; line-height: 28px; font-size: 0.8rem; font-weight: bold; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+
+        /* Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; padding: 10px 0 calc(10px + var(--safe-bottom)); box-shadow: 0 -2px 15px rgba(0,0,0,0.1); z-index: 1000; }
+        .nav-item { flex: 1; border: none; background: none; color: #718096; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+        .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
+
+        /* Buttons & Forms */
+        .btn-main { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 15px; font-weight: bold; font-size: 1rem; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; background: var(--card-bg); color: var(--text); font-size: 1rem; }
+
+        /* Schema Specifiek */
+        .phase-header { background: var(--primary); color: white; padding: 12px 15px; border-radius: 12px; font-size: 0.75rem; margin: 20px 0 10px; font-weight: bold; text-align: center; }
+        .list-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid #edf2f7; }
+        .badge { font-size: 0.6rem; background: var(--accent); color: white; padding: 3px 8px; border-radius: 10px; font-weight: bold; white-space: nowrap; margin-left: 10px; }
+        .task-detail { font-size: 0.8rem; color: #4a5568; margin-top: 4px; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 style="font-size: 1.3rem;">DOTO 2026</h1>
+            <div id="countdown" style="font-size: 0.75rem; opacity: 0.9;"></div>
+        </div>
+        <button onclick="toggleTheme()" style="background: rgba(255,255,255,0.2); border: none; width: 35px; height: 35px; border-radius: 50%; color: white;">🌓</button>
+    </div>
+</div>
+
+<div class="container">
+    <div id="dash" class="tab-content active">
+        <div class="card">
+            <h2>🎯 Voortgang naar 800km</h2>
+            <div class="progress-container">
+                <div class="progress-text" id="progLabel">0%</div>
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            <p id="remKm" style="text-align: center; font-size: 0.7rem; color: #718096; margin-top: 5px;"></p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-box"><span class="stat-label">Totaal KM</span><span id="statKm" class="stat-value">0</span></div>
+            <div class="stat-box"><span class="stat-label">Snelheid</span><span id="statSpeed" class="stat-value">0</span></div>
+            <div class="stat-box"><span class="stat-label">Sessies</span><span id="statCount" class="stat-value">0</span></div>
+            <div class="stat-box"><span class="stat-label">Knie Gem.</span><span id="statKnee" class="stat-value">0</span></div>
+        </div>
+        <div class="card" style="margin-top:15px; height: 250px;">
+            <canvas id="mainChart"></canvas>
+        </div>
+    </div>
+
+    <div id="log" class="tab-content">
+        <div class="card">
+            <h2>📝 Training Loggen</h2>
+            <input type="date" id="inDate">
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="inKm" placeholder="KM Afstand" step="0.1">
+                <input type="number" id="inMin" placeholder="Minuten">
+            </div>
+            <select id="inKnee">
+                <option value="0">Knie Score (0 = Geen pijn, 10 = Erg)</option>
+                <script>for(let i=1; i<=10; i++) document.write(`<option value="${i}">${i}</option>`)</script>
+            </select>
+            <button class="btn-main" onclick="addEntry()">OPSLAAN</button>
+        </div>
+        <div id="history"></div>
+    </div>
+
+    <div id="sch" class="tab-content">
+        <div class="card">
+            <h2>📅 Trainingsschema</h2>
+            <div id="scheduleBox"></div>
+        </div>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('dash', this)"><span class="nav-icon">📊</span>Stats</button>
+    <button class="nav-item" onclick="switchTab('log', this)"><span class="nav-icon">📝</span>Log</button>
+    <button class="nav-item" onclick="switchTab('sch', this)"><span class="nav-icon">📅</span>Schema</button>
+</nav>
+
+<script>
+    const DB_NAME = 'dodentocht_v10_ultimate';
+    const TARGET = 800;
+    const EVENT = new Date('2026-08-14');
+
     const SCHEDULE_DATA = [
         { phase: "FASE 1: BASIS & KNIE HERSTEL (JAN - FEB)", weeks: [
             { w: "1", d: "29 dec - 4 jan", task: "Di: Rust • Do: 1 jan 5km Tempo • Zo: 12km Wandelen", note: "🎯 START" },
@@ -39,3 +159,104 @@
             { w: "33", d: "10 - 14 aug", task: "Di: Rust • Do: 5km Los • Zo: 14 AUG: 100KM!", note: "🏆 D-DAY" }
         ]}
     ];
+
+    let data = JSON.parse(localStorage.getItem(DB_NAME)) || [];
+    let chart = null;
+
+    function init() {
+        document.getElementById('inDate').valueAsDate = new Date();
+        render();
+        renderSchedule();
+        updateCountdown();
+    }
+
+    function switchTab(id, btn) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
+        if(id === 'dash') renderChart();
+    }
+
+    function addEntry() {
+        const km = parseFloat(document.getElementById('inKm').value);
+        const min = parseInt(document.getElementById('inMin').value);
+        if(!km || !min) return alert("Vul afstand en tijd in!");
+        
+        data.push({
+            id: Date.now(),
+            date: document.getElementById('inDate').value,
+            km: km, min: min,
+            knee: parseInt(document.getElementById('inKnee').value),
+            speed: (km / (min/60)).toFixed(2)
+        });
+        
+        localStorage.setItem(DB_NAME, JSON.stringify(data));
+        render();
+        switchTab('dash', document.querySelector('.nav-item'));
+    }
+
+    function render() {
+        const total = data.reduce((s, x) => s + x.km, 0);
+        const avgKnee = data.length ? (data.reduce((s, x) => s + x.knee, 0) / data.length).toFixed(1) : 0;
+        const avgSpd = data.length ? (data.reduce((s, x) => s + parseFloat(x.speed), 0) / data.length).toFixed(1) : 0;
+
+        document.getElementById('statKm').innerText = total.toFixed(1);
+        document.getElementById('statCount').innerText = data.length;
+        document.getElementById('statKnee').innerText = avgKnee;
+        document.getElementById('statSpeed').innerText = avgSpd;
+
+        const p = Math.min((total/TARGET)*100, 100);
+        document.getElementById('progressBar').style.width = p + '%';
+        document.getElementById('progLabel').innerText = Math.round(p) + '%';
+        document.getElementById('remKm').innerText = `Nog ${(TARGET-total).toFixed(1)} km tot doel`;
+
+        const histHtml = data.slice().reverse().map(t => `
+            <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:12px;">
+                <div><b>${t.km}km</b> <small>(${t.date})</small><br><span style="font-size:0.75rem; color:#718096;">${t.speed}km/u • Knie: ${t.knee}/10</span></div>
+                <button onclick="del(${t.id})" style="border:none; background:none; font-size:1.2rem;">🗑️</button>
+            </div>`).join('');
+        document.getElementById('history').innerHTML = histHtml;
+        renderChart();
+    }
+
+    function renderSchedule() {
+        let h = '';
+        SCHEDULE_DATA.forEach(p => {
+            h += `<div class="phase-header">${p.phase}</div>`;
+            p.weeks.forEach(w => {
+                h += `
+                <div class="list-item">
+                    <div style="flex:1;">
+                        <div style="font-weight:bold; font-size:0.9rem;">Week ${w.w} <span style="font-weight:normal; font-size:0.75rem; color:#718096; margin-left:5px;">(${w.d})</span></div>
+                        <div class="task-detail">${w.task}</div>
+                    </div>
+                    ${w.note ? `<span class="badge">${w.note}</span>` : ''}
+                </div>`;
+            });
+        });
+        document.getElementById('scheduleBox').innerHTML = h;
+    }
+
+    function renderChart() {
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        if(chart) chart.destroy();
+        const last = data.slice(-7);
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: last.map(x => x.date.split('-')[2]),
+                datasets: [{ label: 'Snelheid', data: last.map(x=>x.speed), borderColor: '#1a2a6c', backgroundColor: 'rgba(26,42,108,0.1)', fill: true, tension: 0.3 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    function del(id) { if(confirm('Wissen?')) { data = data.filter(x=>x.id!==id); localStorage.setItem(DB_NAME, JSON.stringify(data)); render(); } }
+    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+    function updateCountdown() { document.getElementById('countdown').innerText = `⏰ Nog ${Math.floor((EVENT - new Date())/(1000*60*60*24))} dagen`; }
+
+    window.onload = init;
+</script>
+</body>
+</html>
