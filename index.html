@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Doto 2026 App</title>
+    <title>Dodentocht 2026 Mobile</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,17 +19,7 @@
             --bg: #f0f2f5;
             --card-bg: #ffffff;
             --text: #1a202c;
-            --safe-area-bottom: env(safe-area-inset-bottom);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            padding-bottom: calc(80px + var(--safe-area-bottom)); /* Ruimte voor de bottom nav */
-            line-height: 1.5;
+            --safe-bottom: env(safe-area-inset-bottom);
         }
 
         body.dark-mode {
@@ -38,279 +28,215 @@
             --text: #e8e8e8;
         }
 
-        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        /* Mobile Header */
-        .header {
-            padding: 20px 15px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            margin-bottom: 20px;
+        body {
+            font-family: -apple-system, system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            padding-bottom: calc(80px + var(--safe-bottom));
         }
 
-        .header h1 { font-size: 1.5rem; }
-        .countdown-small { font-size: 0.9rem; opacity: 0.9; font-weight: bold; }
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px 20px;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
 
-        /* Card Style */
+        .header h1 { font-size: 1.6rem; letter-spacing: -1px; }
+        .countdown { font-size: 0.85rem; font-weight: bold; opacity: 0.9; }
+
+        .container { padding: 15px; }
+
+        /* Cards */
         .card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 18px;
             margin-bottom: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
-        .card h2 { font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .card h2 { font-size: 1.1rem; margin-bottom: 15px; border-left: 4px solid var(--accent); padding-left: 10px; }
 
-        /* Progress Bar Mobiel */
-        .progress-container {
-            height: 24px;
-            background: #e2e8f0;
-            border-radius: 12px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #48bb78, #38a169);
-            width: 0%;
-            transition: width 1s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
+        /* Progress */
+        .progress-container { height: 28px; background: #e2e8f0; border-radius: 14px; overflow: hidden; margin: 10px 0; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #48bb78, #38a169); width: 0%; transition: width 1s; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; }
 
-        /* Stats Grid - 2 kolommen op mobiel */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .stat-box {
-            background: var(--bg);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        .stat-label { font-size: 0.7rem; text-transform: uppercase; color: #718096; }
-        .stat-value { font-size: 1.4rem; font-weight: 800; }
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: var(--card-bg); padding: 15px; border-radius: 18px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-bottom: 3px solid var(--primary); }
+        .stat-label { font-size: 0.65rem; text-transform: uppercase; color: #718096; font-weight: bold; }
+        .stat-value { font-size: 1.3rem; font-weight: 800; display: block; }
 
-        /* Formulier Velden */
-        .form-field { margin-bottom: 15px; }
-        label { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; color: #718096; }
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e0;
-            border-radius: 10px;
-            font-size: 1rem;
-            background: var(--card-bg);
-            color: var(--text);
-        }
-
-        /* Bottom Navigation Bar */
+        /* Navigation */
         .bottom-nav {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             background: var(--card-bg);
             display: flex;
-            justify-content: space-around;
-            padding: 10px 5px calc(10px + var(--safe-area-bottom));
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            padding: 10px 0 calc(10px + var(--safe-bottom));
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
             z-index: 1000;
         }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #718096;
-            font-size: 0.65rem;
-            flex: 1;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
+        .nav-item { flex: 1; border: none; background: none; color: #718096; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
-        .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
+        .nav-icon { font-size: 1.5rem; margin-bottom: 2px; }
 
-        /* Training Lijst (Mobile Cards) */
-        .training-item {
-            border-bottom: 1px solid #e2e8f0;
-            padding: 12px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .training-info h4 { font-size: 1rem; }
-        .training-info p { font-size: 0.8rem; color: #718096; }
-        .training-badge { 
-            background: var(--primary); 
-            color: white; 
-            padding: 4px 8px; 
-            border-radius: 6px; 
-            font-size: 0.75rem; 
-            font-weight: bold;
-        }
+        /* Lists */
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #edf2f7; }
+        .list-info h4 { font-size: 0.95rem; }
+        .list-info p { font-size: 0.75rem; color: #718096; }
 
-        .btn-full {
-            width: 100%;
-            padding: 15px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 1rem;
-            margin-top: 10px;
-        }
+        /* Form Elements */
+        .form-field { margin-bottom: 12px; }
+        label { display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: #4a5568; }
+        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e0; background: var(--card-bg); color: var(--text); font-size: 1rem; }
+
+        .btn-main { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 15px; font-weight: bold; font-size: 1rem; margin-top: 10px; }
 
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: slideUp 0.3s ease; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .chart-container { position: relative; height: 250px; width: 100%; }
+        .phase-header { background: var(--primary); color: white; padding: 10px 15px; border-radius: 10px; font-size: 0.8rem; margin: 20px 0 10px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
-            <h1>Doto 2026</h1>
-            <div id="countdown-mobile" class="countdown-small"></div>
+            <h1>DODENTOCHT 2026</h1>
+            <div id="countdown" class="countdown">Laden...</div>
         </div>
-        <button onclick="toggleTheme()" style="background: rgba(255,255,255,0.2); border: none; padding: 8px; border-radius: 50%; color: white;">🌓</button>
+        <button onclick="toggleTheme()" style="background: rgba(255,255,255,0.2); border: none; width: 40px; height: 40px; border-radius: 50%; color: white;">🌓</button>
     </div>
 </div>
 
 <div class="container">
-    <div id="dashboard" class="tab-content active">
+    
+    <div id="dash" class="tab-content active">
         <div class="card">
-            <h2>🎯 Voortgang (800km)</h2>
+            <h2>🎯 Voortgang naar 800km</h2>
             <div class="progress-container">
                 <div id="progressBar" class="progress-bar">0%</div>
             </div>
-            <p id="progressLabel" style="font-size: 0.8rem; text-align: center; margin-top: 5px;"></p>
+            <p id="progText" style="text-align: center; font-size: 0.75rem; color: #718096; margin-top: 5px;"></p>
         </div>
 
         <div class="stats-grid">
             <div class="stat-box">
-                <div class="stat-label">Totaal KM</div>
-                <div class="stat-value" id="totalKm">0</div>
+                <span class="stat-label">Totaal KM</span>
+                <span id="totalKm" class="stat-value">0</span>
             </div>
             <div class="stat-box">
-                <div class="stat-label">Snelheid</div>
-                <div class="stat-value" id="avgSpeed">0</div>
+                <span class="stat-label">Snelheid</span>
+                <span id="avgSpeed" class="stat-value">0</span>
             </div>
             <div class="stat-box">
-                <div class="stat-label">Sessies</div>
-                <div class="stat-value" id="totalSessions">0</div>
+                <span class="stat-label">Sessies</span>
+                <span id="totalSess" class="stat-value">0</span>
             </div>
             <div class="stat-box">
-                <div class="stat-label">Knie Gem.</div>
-                <div class="stat-value" id="avgKnee">0</div>
+                <span class="stat-label">Knie Score</span>
+                <span id="kneeAvg" class="stat-value">0</span>
             </div>
         </div>
 
-        <div class="card" style="margin-top: 15px;">
-            <h2>📈 Snelheid Evolutie</h2>
-            <div class="chart-container">
-                <canvas id="speedChart"></canvas>
-            </div>
+        <div class="card">
+            <h2>📈 Evolutie</h2>
+            <canvas id="speedChart" style="height: 200px;"></canvas>
         </div>
     </div>
 
-    <div id="training" class="tab-content">
+    <div id="log" class="tab-content">
         <div class="card">
-            <h2>➕ Log Training</h2>
+            <h2>📝 Nieuwe Log</h2>
             <div class="form-field">
                 <label>Datum</label>
-                <input type="date" id="trainingDate">
+                <input type="date" id="tDate">
             </div>
-            <div class="form-field">
-                <label>Type & Afstand (km)</label>
-                <div style="display: flex; gap: 10px;">
-                    <select id="trainingType" style="flex: 2;">
-                        <option value="Wandelen">🚶 Wandelen</option>
-                        <option value="Lopen">🏃 Lopen</option>
+            <div style="display: flex; gap: 10px;">
+                <div class="form-field" style="flex: 2;">
+                    <label>KM</label>
+                    <input type="number" id="tKm" step="0.1" placeholder="Afstand">
+                </div>
+                <div class="form-field" style="flex: 2;">
+                    <label>Minuten</label>
+                    <input type="number" id="tMin" placeholder="Duur">
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <div class="form-field" style="flex: 1;">
+                    <label>Knie (1-10)</label>
+                    <input type="number" id="tKnee" value="0">
+                </div>
+                <div class="form-field" style="flex: 1;">
+                    <label>Nacht?</label>
+                    <select id="tNight">
+                        <option value="false">Nee</option>
+                        <option value="true">Ja 🌙</option>
                     </select>
-                    <input type="number" id="trainingKm" placeholder="KM" style="flex: 1;">
                 </div>
             </div>
-            <div class="form-field">
-                <label>Duur (minuten) & Knie Score</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="number" id="trainingMin" placeholder="Min" style="flex: 1;">
-                    <input type="number" id="kneeScore" placeholder="1-10" style="flex: 1;">
-                </div>
-            </div>
-            <button class="btn-full" onclick="addTraining()">OPSLAAN</button>
+            <button class="btn-main" onclick="saveTraining()">LOG OPSLAAN</button>
         </div>
 
         <div class="card">
-            <h2>📋 Recente Activiteit</h2>
-            <div id="historyContainer"></div>
+            <h2>📋 Geschiedenis</h2>
+            <div id="historyList"></div>
         </div>
     </div>
 
-    <div id="schedule" class="tab-content">
+    <div id="sch" class="tab-content">
         <div class="card">
-            <h2>📅 Week Planning</h2>
-            <div id="mobileSchedule">
-                </div>
+            <h2>📅 Trainingsschema</h2>
+            <div id="mobileSchedule"></div>
         </div>
     </div>
 
-    <div id="leaderboard" class="tab-content">
+    <div id="lead" class="tab-content">
         <div class="card">
             <h2>🏆 Leaderboard</h2>
-            <div id="leaderboardBodyMobile"></div>
-            <input type="text" id="friendCode" placeholder="Plak code van vriend" style="margin-top: 10px;">
-            <button class="btn-full" style="background: var(--accent);" onclick="addFriend()">VRIEND TOEVOEGEN</button>
+            <div id="friendsList"></div>
+            <hr style="margin: 15px 0; opacity: 0.1;">
+            <div class="form-field">
+                <label>Vriend toevoegen (Code)</label>
+                <input type="text" id="friendCode" placeholder="Plak code hier">
+            </div>
+            <button class="btn-main" style="background: var(--accent);" onclick="addFriend()">VRIEND TOEVOEGEN</button>
         </div>
+        
         <div class="card">
-            <h2>⚙️ Instellingen</h2>
-            <button class="btn-full" style="background: #718096;" onclick="exportData()">DOWNLOAD BACKUP</button>
-            <button class="btn-full" style="background: #e74c3c; margin-top: 10px;" onclick="clearAllData()">WISSEN</button>
+            <h2>⚙️ Beheer</h2>
+            <button class="btn-main" style="background: #718096; font-size: 0.8rem;" onclick="exportData()">DOWNLOAD BACKUP</button>
         </div>
     </div>
+
 </div>
 
 <nav class="bottom-nav">
-    <button class="nav-item active" onclick="switchTab('dashboard', this)">
-        <span class="nav-icon">📊</span>
-        <span>Stats</span>
+    <button class="nav-item active" onclick="switchTab('dash', this)">
+        <span class="nav-icon">📊</span><span>Stats</span>
     </button>
-    <button class="nav-item" onclick="switchTab('training', this)">
-        <span class="nav-icon">📝</span>
-        <span>Log</span>
+    <button class="nav-item" onclick="switchTab('log', this)">
+        <span class="nav-icon">📝</span><span>Log</span>
     </button>
-    <button class="nav-item" onclick="switchTab('schedule', this)">
-        <span class="nav-icon">📅</span>
-        <span>Schema</span>
+    <button class="nav-item" onclick="switchTab('sch', this)">
+        <span class="nav-icon">📅</span><span>Schema</span>
     </button>
-    <button class="nav-item" onclick="switchTab('leaderboard', this)">
-        <span class="nav-icon">🏆</span>
-        <span>Groep</span>
+    <button class="nav-item" onclick="switchTab('lead', this)">
+        <span class="nav-icon">🏆</span><span>Groep</span>
     </button>
 </nav>
 
 <script>
-    // DEZELFDE LOGICA ALS V10 MAAR GEOPTIMALISEERD VOOR MOBIEL
     const STORAGE_KEY = 'dodentocht_v10_ultimate';
     const FRIENDS_KEY = 'dodentocht_v10_friends';
     const TARGET_KM = 800;
@@ -318,106 +244,166 @@
 
     let trainings = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     let friends = JSON.parse(localStorage.getItem(FRIENDS_KEY)) || [];
-    let charts = {};
+    let chart = null;
+
+    // SCHEMA DATA UIT V10
+    const SCHEDULE_DATA = [
+        { phase: "FASE 1: BASIS (JAN-FEB)", weeks: [
+            { w: 3, d: "12-18 jan", task: "16km Wandelen", note: "Basis" },
+            { w: 4, d: "19-25 jan", task: "10km Herstel", note: "💤 Rust" },
+            { w: 5, d: "26 jan-1 feb", task: "18km Wandelen", note: "" },
+            { w: 6, d: "2-8 feb", task: "20km Wandelen", note: "🎯 20KM" }
+        ]},
+        { phase: "FASE 2: AFSTAND (MRT-APR)", weeks: [
+            { w: 9, d: "23 feb-1 mrt", task: "25km Wandelen", note: "" },
+            { w: 13, d: "23-29 mrt", task: "32km Wandelen", note: "🎯 30KM+" },
+            { w: 15, d: "6-12 apr", task: "35km Wandelen", note: "" }
+        ]},
+        { phase: "FASE 3: PIEK (MEI-JUN)", weeks: [
+            { w: 18, d: "4-10 mei", task: "40km Wandelen", note: "🎯 40KM" },
+            { w: 22, d: "1-7 juni", task: "50km Wandelen", note: "🎯 50KM" },
+            { w: 26, d: "22-28 juni", task: "30km NACHT", note: "🌙 Test" }
+        ]},
+        { phase: "FASE 4: FINALE (JUL-AUG)", weeks: [
+            { w: 29, d: "13-19 juli", task: "60km TEST", note: "🔥 ZWAAR" },
+            { w: 33, d: "10-14 aug", task: "100KM", note: "🏆 D-DAY" }
+        ]}
+    ];
 
     function init() {
-        document.getElementById('trainingDate').valueAsDate = new Date();
+        document.getElementById('tDate').valueAsDate = new Date();
         renderAll();
         updateCountdown();
+        renderSchedule();
     }
 
-    function switchTab(tabId, btn) {
+    function switchTab(id, btn) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        
-        document.getElementById(tabId).classList.add('active');
+        document.getElementById(id).classList.add('active');
         btn.classList.add('active');
-        
-        if(tabId === 'dashboard') renderCharts();
+        if(id === 'dash') renderChart();
     }
 
-    function addTraining() {
-        const tr = {
+    function saveTraining() {
+        const km = parseFloat(document.getElementById('tKm').value);
+        const min = parseInt(document.getElementById('tMin').value);
+        if(!km || !min) return alert('Vul alles in!');
+
+        const t = {
             id: Date.now(),
-            date: document.getElementById('trainingDate').value,
-            type: document.getElementById('trainingType').value,
-            km: parseFloat(document.getElementById('trainingKm').value),
-            min: parseInt(document.getElementById('trainingMin').value),
-            knee: parseInt(document.getElementById('kneeScore').value) || 0,
-            speed: (parseFloat(document.getElementById('trainingKm').value) / (parseInt(document.getElementById('trainingMin').value)/60)).toFixed(2)
+            date: document.getElementById('tDate').value,
+            km: km,
+            min: min,
+            knee: parseInt(document.getElementById('tKnee').value),
+            night: document.getElementById('tNight').value === 'true',
+            speed: (km / (min/60)).toFixed(2)
         };
 
-        if(!tr.km || !tr.min) return alert('Vul alles in!');
-
-        trainings.push(tr);
+        trainings.push(t);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(trainings));
         renderAll();
-        switchTab('dashboard', document.querySelector('.nav-item'));
+        switchTab('dash', document.querySelector('.nav-item'));
+        
+        // Reset
+        document.getElementById('tKm').value = '';
+        document.getElementById('tMin').value = '';
     }
 
     function renderAll() {
-        const total = trainings.reduce((acc, curr) => acc + curr.km, 0);
+        const total = trainings.reduce((s, x) => s + x.km, 0);
+        const kneeAvg = trainings.length ? (trainings.reduce((s, x) => s + x.knee, 0) / trainings.length).toFixed(1) : 0;
+        
         document.getElementById('totalKm').innerText = total.toFixed(1);
-        document.getElementById('totalSessions').innerText = trainings.length;
+        document.getElementById('totalSess').innerText = trainings.length;
+        document.getElementById('kneeAvg').innerText = kneeAvg;
         
-        const progress = (total / TARGET_KM) * 100;
-        document.getElementById('progressBar').style.width = Math.min(progress, 100) + '%';
-        document.getElementById('progressBar').innerText = Math.round(progress) + '%';
-        document.getElementById('progressLabel').innerText = `Nog ${(TARGET_KM - total).toFixed(1)} km te gaan`;
+        const avgSpd = trainings.length ? (trainings.reduce((s, x) => s + parseFloat(x.speed), 0) / trainings.length).toFixed(2) : 0;
+        document.getElementById('avgSpeed').innerText = avgSpd;
 
-        // Render History (Mobile Cards)
-        const historyHtml = trainings.slice().reverse().map(t => `
-            <div class="training-item">
-                <div class="training-info">
-                    <h4>${t.type} - ${t.km}km</h4>
-                    <p>${t.date} • ${t.speed} km/u • Knie: ${t.knee}/10</p>
-                </div>
-                <button onclick="deleteTraining(${t.id})" style="border:none; background:none; font-size:1.2rem;">🗑️</button>
-            </div>
-        `).join('');
-        document.getElementById('historyContainer').innerHTML = historyHtml || '<p style="text-align:center; color:#718096; padding:20px;">Nog geen trainingen.</p>';
-        
-        renderCharts();
+        const perc = Math.min((total / TARGET_KM) * 100, 100);
+        document.getElementById('progressBar').style.width = perc + '%';
+        document.getElementById('progressBar').innerText = Math.round(perc) + '%';
+        document.getElementById('progText').innerText = `Nog ${(TARGET_KM - total).toFixed(1)} km te gaan`;
+
+        renderHistory();
+        renderChart();
     }
 
-    function renderCharts() {
+    function renderHistory() {
+        const html = trainings.slice().reverse().map(t => `
+            <div class="list-item">
+                <div class="list-info">
+                    <h4>${t.km} km ${t.night ? '🌙' : ''}</h4>
+                    <p>${t.date} • ${t.speed} km/u • Knie: ${t.knee}/10</p>
+                </div>
+                <button onclick="delT(${t.id})" style="background:none; border:none; font-size:1.2rem;">🗑️</button>
+            </div>
+        `).join('');
+        document.getElementById('historyList').innerHTML = html || '<p style="font-size:0.8rem; text-align:center; color:#999;">Nog geen trainingen.</p>';
+    }
+
+    function renderSchedule() {
+        let html = '';
+        SCHEDULE_DATA.forEach(p => {
+            html += `<div class="phase-header">${p.phase}</div>`;
+            p.weeks.forEach(w => {
+                html += `
+                <div class="list-item">
+                    <div class="list-info">
+                        <h4 style="font-size:0.85rem;">Week ${w.w}: ${w.task}</h4>
+                        <p>${w.d}</p>
+                    </div>
+                    ${w.note ? `<span style="font-size:0.6rem; background:var(--accent); color:white; padding:2px 6px; border-radius:10px;">${w.note}</span>` : ''}
+                </div>`;
+            });
+        });
+        document.getElementById('mobileSchedule').innerHTML = html;
+    }
+
+    function renderChart() {
         const ctx = document.getElementById('speedChart').getContext('2d');
-        if (charts.speed) charts.speed.destroy();
-        
-        const data = trainings.slice(-10); // Laatste 10 trainingen
-        charts.speed = new Chart(ctx, {
+        if(chart) chart.destroy();
+        const last10 = trainings.slice(-10);
+        chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: data.map(t => t.date.split('-').slice(1).join('/')),
+                labels: last10.map(t => t.date.split('-').slice(1).join('/')),
                 datasets: [{
-                    label: 'Snelheid (km/u)',
-                    data: data.map(t => t.speed),
+                    label: 'Snelheid',
+                    data: last10.map(t => t.speed),
                     borderColor: '#1a2a6c',
-                    tension: 0.3,
+                    backgroundColor: 'rgba(26, 42, 108, 0.1)',
                     fill: true,
-                    backgroundColor: 'rgba(26, 42, 108, 0.1)'
+                    tension: 0.3
                 }]
             },
             options: { responsive: true, maintainAspectRatio: false }
         });
     }
 
-    function toggleTheme() {
-        document.body.classList.toggle('dark-mode');
+    function delT(id) {
+        if(confirm('Verwijderen?')) {
+            trainings = trainings.filter(x => x.id !== id);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(trainings));
+            renderAll();
+        }
     }
 
     function updateCountdown() {
         const diff = EVENT_DATE - new Date();
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        document.getElementById('countdown-mobile').innerText = `⏰ Nog ${days} dagen tot D-day`;
+        document.getElementById('countdown').innerText = `⏰ Nog ${days} dagen tot D-day`;
     }
 
-    function deleteTraining(id) {
-        if(confirm('Verwijderen?')) {
-            trainings = trainings.filter(t => t.id !== id);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(trainings));
-            renderAll();
-        }
+    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+
+    function exportData() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(trainings));
+        const dl = document.createElement('a');
+        dl.setAttribute("href", dataStr);
+        dl.setAttribute("download", "dodentocht_backup.json");
+        dl.click();
     }
 
     window.onload = init;
