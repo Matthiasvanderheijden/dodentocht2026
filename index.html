@@ -585,11 +585,23 @@ const EXERCISE_DATA = [
     { title: "Side Leg Raises", reps: "3 x 15 per kant", desc: "Liggend op je zij, bovenste been omhoog. Versterkt de heupabductoren.", icon: "↔️" },
     { title: "Bird Dog", reps: "3 x 10 per kant", desc: "Op handen en knieën, tegengestelde arm en been strekken. Voor de rug.", icon: "🐕" }
 ];
+    // LIJST MET BEGROETINGEN
+const GREETINGS = [
+    "Klaar voor je kilometers?",
+    "Hup hup, die wandelschoenen in!",
+    "Bornem wacht op niemand...",
+    "Knieën oké? Laten we gaan!",
+    "Lekker bezig, kampioen!",
+    "Stap voor stap naar de finish.",
+    "Niet plooien nu!",
+    "Dodentocht-modus: AAN."
+];
     
     // ==================== INITIALIZATION ====================
     function init() {
         loadData();
         loadTheme();
+        showWelcomeMessage();
         document.getElementById('tDate').valueAsDate = new Date();
         renderAll();
         renderExercises();
@@ -740,6 +752,32 @@ const EXERCISE_DATA = [
         });
         document.getElementById('mobileSchedule').innerHTML = html;
     }
+
+    function showWelcomeMessage() {
+    // 1. Kies een willekeurige zin
+    const randomText = GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
+    
+    // 2. Bepaal of het ochtend, middag of avond is
+    const hour = new Date().getHours();
+    let timeOfDay = "Goedenavond";
+    if (hour < 12) timeOfDay = "Goeiemorgen";
+    else if (hour < 18) timeOfDay = "Goeiemiddag";
+
+    const fullMessage = `${timeOfDay}! ${randomText}`;
+
+    // 3. Zoek de notificatiebalk en zet de tekst erin
+    const notifEl = document.getElementById('notif');
+    if (notifEl) {
+        notifEl.innerText = fullMessage;
+        notifEl.style.display = 'block';
+        notifEl.style.background = 'var(--accent)'; // De oranje kleur
+        
+        // 4. Na 5 seconden (5000 milliseconden) verbergen we het weer
+        setTimeout(() => {
+            notifEl.style.display = 'none';
+        }, 5000);
+    }
+}
     
     function renderExercises() {
     const container = document.getElementById('exerciseList');
@@ -924,6 +962,7 @@ const EXERCISE_DATA = [
 </script>
 </body>
 </html>
+
 
 
 
