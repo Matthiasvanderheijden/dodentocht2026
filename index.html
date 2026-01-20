@@ -572,6 +572,14 @@
             ]
         }
     ];
+    // LIJST MET OEFENINGEN
+const EXERCISE_DATA = [
+    { title: "Wall Sit", reps: "3 x 45 sec", desc: "Met rug tegen muur, knieën 90 graden. Cruciaal voor kniestabiliteit.", icon: "🧘" },
+    { title: "Lunges", reps: "3 x 12 per been", desc: "Grote stap vooruit, zak door je knie. Versterkt billen en balans.", icon: "👣" },
+    { title: "Calf Raises", reps: "3 x 15", desc: "Op je tenen staan en rustig zakken. Voorkomt shin splints (schenen).", icon: "🆙" },
+    { title: "Glute Bridges", reps: "3 x 20", desc: "Liggend op rug, heupen omhoog duwen. Goed voor onderrug/hamstrings.", icon: "🏠" },
+    { title: "Single Leg Balance", reps: "2 x 60 sec", desc: "Sta op één been. Versterkt enkels voor onverharde paden.", icon: "⚖️" }
+];
 
     // ==================== INITIALIZATION ====================
     function init() {
@@ -579,6 +587,7 @@
         loadTheme();
         document.getElementById('tDate').valueAsDate = new Date();
         renderAll();
+        renderExercises();
         updateCountdown();
         renderSchedule();
         setInterval(updateCountdown, 60000);
@@ -726,6 +735,22 @@
         });
         document.getElementById('mobileSchedule').innerHTML = html;
     }
+    
+    function renderExercises() {
+    const container = document.getElementById('exerciseList');
+    if(!container) return; 
+    
+    let html = EXERCISE_DATA.map(ex => `
+        <div class="schedule-week" style="border-left-color: var(--primary);">
+            <div class="week-header">
+                <div class="week-title">${ex.icon} ${ex.title}</div>
+                <span class="week-badge" style="background: var(--primary);">${ex.reps}</span>
+            </div>
+            <div class="week-tasks" style="font-size: 0.75rem; color: #4a5568; line-height: 1.4;">${ex.desc}</div>
+        </div>
+    `).join('');
+    container.innerHTML = html;
+}
 
     function renderChart() {
         const ctx = document.getElementById('speedChart').getContext('2d');
@@ -894,4 +919,5 @@
 </script>
 </body>
 </html>
+
 
