@@ -284,7 +284,7 @@
 }
 
 @keyframes celebrate-up { 
-    0% { opacity: 0; transform: translate(0, 0) scale(0); }
+    0% { opacity: 1; transform: translate(0, 0) scale(1); }
     20% { opacity: 1; transform: scale(1); }
     100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.2); }
 }
@@ -827,7 +827,8 @@ function doCelebration() {
         const p = document.createElement('div');
         p.classList.add('celebration-particle');
         p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        p.style.left = '50%'; p.style.bottom = '15%';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.top  = Math.random() * 100 + 'vh';
         const x = (Math.random() - 0.5) * 350;
         const y = -(Math.random() * 250 + 150);
         p.style.setProperty('--x', `${x}px`);
@@ -1020,6 +1021,7 @@ function doCelebration() {
 </script>
 </body>
 </html>
+
 
 
 
