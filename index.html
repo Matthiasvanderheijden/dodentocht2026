@@ -735,7 +735,6 @@ const GREETINGS = [
         document.getElementById('tMin').value = '';
         document.getElementById('tKnee').value = '0';
         
-        alert('✅ Training opgeslagen!');
         doCelebration();
     }
 
@@ -828,7 +827,7 @@ function doCelebration() {
         const p = document.createElement('div');
         p.classList.add('celebration-particle');
         p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        p.style.left = '50%'; p.style.bottom = '10%';
+        p.style.left = '50%'; p.style.bottom = '15%';
         const x = (Math.random() - 0.5) * 350;
         const y = -(Math.random() * 250 + 150);
         p.style.setProperty('--x', `${x}px`);
@@ -1021,6 +1020,7 @@ function doCelebration() {
 </script>
 </body>
 </html>
+
 
 
 
