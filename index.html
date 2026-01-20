@@ -284,9 +284,8 @@
 }
 
 @keyframes celebrate-up { 
-    0% { opacity: 1; transform: translate(0, 0) scale(1); }
-    20% { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.2); }
+    0% { opacity: 1; transform: scale(1); } 
+    100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.5); } 
 }
         
         .phase-header { 
@@ -822,17 +821,24 @@ const GREETINGS = [
 function doCelebration() {
     const container = document.getElementById('celebrationContainer');
     if (!container) return;
-    const colors = ['#f39c12', '#48bb78', '#1a2a6c', '#b21f1f'];
-    for (let i = 0; i < 35; i++) {
+    const colors = ['#f39c12', '#48bb78', '#1a2a6c', '#b21f1f', '#ffffff'];
+    
+    for (let i = 0; i < 60; i++) {
         const p = document.createElement('div');
         p.classList.add('celebration-particle');
         p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Gebruik vw (breedte) en vh (hoogte) voor willekeurige plekken
         p.style.left = Math.random() * 100 + 'vw';
-        p.style.top  = Math.random() * 100 + 'vh';
-        const x = (Math.random() - 0.5) * 350;
-        const y = -(Math.random() * 250 + 150);
+        p.style.top = Math.random() * 100 + 'vh';
+        
+        // Laat ze alle kanten op spatten
+        const x = (Math.random() - 0.5) * 300;
+        const y = (Math.random() - 0.5) * 300;
+        
         p.style.setProperty('--x', `${x}px`);
         p.style.setProperty('--y', `${y}px`);
+        
         container.appendChild(p);
         p.addEventListener('animationend', () => p.remove());
     }
@@ -1021,6 +1027,7 @@ function doCelebration() {
 </script>
 </body>
 </html>
+
 
 
 
