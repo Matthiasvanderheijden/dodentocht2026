@@ -1,292 +1,41 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dodentocht 2026 App</title>
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/854/854868.png">
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --primary: #1a2a6c; --secondary: #b21f1f; --accent: #f39c12;
-            --bg: #f0f2f5; --card-bg: #ffffff; --text: #1a202c;
-            --safe-bottom: env(safe-area-inset-bottom);
-        }
-        body.dark-mode { --bg: #121212; --card-bg: #1e1e1e; --text: #e8e8e8; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); color: var(--text); padding-bottom: calc(90px + var(--safe-bottom)); }
-        
-        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 25px 20px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; position: sticky; top: 0; z-index: 100; }
-        .container { padding: 15px; }
-        .card { background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        
-        /* Stats Styles */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-box { background: var(--card-bg); padding: 15px; border-radius: 18px; text-align: center; border-bottom: 3px solid var(--primary); }
-        .stat-label { font-size: 0.65rem; color: #718096; font-weight: bold; text-transform: uppercase; }
-        .stat-value { font-size: 1.3rem; font-weight: 800; display: block; }
-        
-        /* Progress Bar */
-        .progress-container { height: 28px; background: #e2e8f0; border-radius: 14px; overflow: hidden; margin: 10px 0; position: relative; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #48bb78, #38a169); width: 0%; transition: width 1s; }
-        .progress-text { position: absolute; width: 100%; text-align: center; line-height: 28px; font-size: 0.8rem; font-weight: bold; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-
-        /* Navigation */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; padding: 10px 0 calc(10px + var(--safe-bottom)); box-shadow: 0 -2px 15px rgba(0,0,0,0.1); z-index: 1000; }
-        .nav-item { flex: 1; border: none; background: none; color: #718096; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; }
-        .nav-item.active { color: var(--primary); font-weight: bold; }
-        .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
-
-        /* Forms & Buttons */
-        .btn-main { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 15px; font-weight: bold; font-size: 1rem; }
-        input, select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; background: var(--card-bg); color: var(--text); }
-
-        .phase-header { background: var(--primary); color: white; padding: 10px 15px; border-radius: 10px; font-size: 0.75rem; margin: 20px 0 10px; font-weight: bold; }
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #edf2f7; }
-        .badge { font-size: 0.6rem; background: var(--accent); color: white; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
-
-        .notification { position: fixed; top: 20px; left: 20px; right: 20px; background: var(--success); color: white; padding: 15px; border-radius: 12px; z-index: 2000; display: none; animation: slideDown 0.5s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        @keyframes slideDown { from { transform: translateY(-100px); } to { transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-<div id="notif" class="notification"></div>
-
-<div class="header">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
-            <h1 style="font-size: 1.3rem;">DOTO 2026</h1>
-            <div id="countdown" style="font-size: 0.75rem; opacity: 0.9;"></div>
-        </div>
-        <button onclick="toggleTheme()" style="background: rgba(255,255,255,0.2); border: none; width: 35px; height: 35px; border-radius: 50%; color: white;">🌓</button>
-    </div>
-</div>
-
-<div class="container">
-    <div id="dash" class="tab-content active">
-        <div class="card">
-            <h2>🎯 Jaardoel: 800km</h2>
-            <div class="progress-container">
-                <div class="progress-text" id="progLabel">0%</div>
-                <div id="progressBar" class="progress-bar"></div>
-            </div>
-            <p id="remKm" style="text-align: center; font-size: 0.7rem; color: #718096; margin-top: 5px;"></p>
-        </div>
-        <div class="stats-grid">
-            <div class="stat-box"><span class="stat-label">Totaal KM</span><span id="statKm" class="stat-value">0</span></div>
-            <div class="stat-box"><span class="stat-label">Snelheid</span><span id="statSpeed" class="stat-value">0</span></div>
-            <div class="stat-box"><span class="stat-label">Sessies</span><span id="statCount" class="stat-value">0</span></div>
-            <div class="stat-box"><span class="stat-label">Knie Score</span><span id="statKnee" class="stat-value">0</span></div>
-        </div>
-        <div class="card" style="margin-top:15px;">
-            <canvas id="mainChart" style="height: 180px;"></canvas>
-        </div>
-    </div>
-
-    <div id="log" class="tab-content">
-        <div class="card">
-            <h2>📝 Nieuwe Training</h2>
-            <input type="date" id="inDate">
-            <div style="display: flex; gap: 10px;">
-                <input type="number" id="inKm" placeholder="KM" step="0.1">
-                <input type="number" id="inMin" placeholder="Min">
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <select id="inKnee" style="flex: 1;">
-                    <option value="">Knie Score (1-10)</option>
-                    <script>for(i=1;i<=10;i++) document.write(`<option value="${i}">${i}</option>`)</script>
-                </select>
-                <select id="inNight" style="flex: 1;">
-                    <option value="false">Dag ☀️</option>
-                    <option value="true">Nacht 🌙</option>
-                </select>
-            </div>
-            <button class="btn-main" onclick="addEntry()">LOG OPSLAAN</button>
-        </div>
-        <div id="history"></div>
-    </div>
-
-    <div id="sch" class="tab-content">
-        <div class="card">
-            <h2>📅 Trainingsplan</h2>
-            <div id="scheduleBox"></div>
-        </div>
-    </div>
-
-    <div id="set" class="tab-content">
-        <div class="card">
-            <h2>⚙️ Data Beheer</h2>
-            <button class="btn-main" style="background:#718096; margin-bottom:10px;" onclick="exportData()">DOWNLOAD BACKUP</button>
-            <input type="file" id="importFile" style="display:none" onchange="importData(event)">
-            <button class="btn-main" style="background:#2d3748;" onclick="document.getElementById('importFile').click()">RESTORE BACKUP</button>
-        </div>
-    </div>
-</div>
-
-<nav class="bottom-nav">
-    <button class="nav-item active" onclick="switchTab('dash', this)"><span class="nav-icon">📊</span>Stats</button>
-    <button class="nav-item" onclick="switchTab('log', this)"><span class="nav-icon">📝</span>Log</button>
-    <button class="nav-item" onclick="switchTab('sch', this)"><span class="nav-icon">📅</span>Plan</button>
-    <button class="nav-item" onclick="switchTab('set', this)"><span class="nav-icon">⚙️</span>Extra</button>
-</nav>
-
-<script>
-    const DB_NAME = 'dodentocht_v10_ultimate';
-    const TARGET = 800;
-    const EVENT = new Date('2026-08-14');
-    const MILESTONES = [
-        {km: 100, msg: "Eerste 100km binnen! Lekker bezig."},
-        {km: 250, msg: "Kwartweg! Je knieën houden het vol."},
-        {km: 500, msg: "500KM! Je bent nu een echte die-hard."},
-        {km: 750, msg: "Bijna daar! Nog even tanden bijten."}
-    ];
-
-    const PHASES = [
-        { name: "FASE 1: BASIS (JAN-FEB)", weeks: [
-            {w:1, d:"29 dec-4 jan", t:"12km", n:"START"}, {w:2, d:"5-11 jan", t:"14km", n:""},
-            {w:3, d:"12-18 jan", t:"16km", n:""}, {w:4, d:"19-25 jan", t:"10km", n:"RUST"},
-            {w:5, d:"26 jan-1 feb", t:"18km", n:""}, {w:6, d:"2-8 feb", t:"20km", n:"MIJLPAAL"},
-            {w:7, d:"9-15 feb", t:"22km", n:""}, {w:8, d:"16-22 feb", t:"12km", n:"RUST"}
+// VOLLEDIGE SCHEMA DATA
+    const SCHEDULE_DATA = [
+        { phase: "FASE 1: BASIS & KNIE HERSTEL (JAN - FEB)", weeks: [
+            { w: "1", d: "29 dec - 4 jan", task: "Di: Rust • Do: 1 jan 5km Tempo • Zo: 12km Wandelen", note: "🎯 START" },
+            { w: "2", d: "5 - 11 jan", task: "Di: 20m Jog • Do: Kracht • Zo: 14km Wandelen", note: "" },
+            { w: "3", d: "12 - 18 jan", task: "Di: 20m Jog • Do: 6km Tempo • Zo: 16km Wandelen", note: "" },
+            { w: "4", d: "19 - 25 jan", task: "Di: Rust • Do: Kracht • Zo: 10km Herstel", note: "💤 HERSTEL" },
+            { w: "5", d: "26 jan - 1 feb", task: "Di: 25m Jog • Do: 7km Tempo • Zo: 18km Wandelen", note: "" },
+            { w: "6", d: "2 - 8 feb", task: "Di: 30m Jog • Do: Kracht • Zo: 20km Wandelen", note: "🎯 20KM" },
+            { w: "7", d: "9 - 15 feb", task: "Di: 30m Jog • Do: 8km Tempo • Zo: 22km Wandelen", note: "" },
+            { w: "8", d: "16 - 22 feb", task: "Di: Rust • Do: Kracht • Zo: 12km Herstel", note: "💤 HERSTEL" }
         ]},
-        { name: "FASE 2: AFSTAND (MRT-APR)", weeks: [
-            {w:9, d:"23 feb-1 mrt", t:"25km", n:""}, {w:11, d:"9-15 mrt", t:"28km", n:""},
-            {w:13, d:"23-29 mrt", t:"32km", n:"30KM+"}, {w:15, d:"6-12 apr", t:"35km", n:""}
+        { phase: "FASE 2: AFSTAND OPBOUW (MRT - APR)", weeks: [
+            { w: "9", d: "23 feb - 1 mrt", task: "Di: 35m Jog • Do: 8km Tempo • Zo: 25km Wandelen", note: "" },
+            { w: "10", d: "2 - 8 mrt", task: "Di: 35m Jog • Do: Kracht • Zo: 15km Herstel", note: "" },
+            { w: "11", d: "9 - 15 mrt", task: "Di: 40m Jog • Do: 10km Tempo • Zo: 28km Wandelen", note: "" },
+            { w: "12", d: "16 - 22 mrt", task: "Di: Rust • Do: Kracht • Zo: 12km Herstel", note: "💤 HERSTEL" },
+            { w: "13", d: "23 - 29 mrt", task: "Di: 40m Jog • Do: 10km Tempo • Zo: 32km Wandelen", note: "🎯 30KM+" },
+            { w: "14", d: "30 mrt - 5 apr", task: "Di: 45m Jog • Do: Kracht • Zo: 20km Wandelen", note: "" },
+            { w: "15", d: "6 - 12 apr", task: "Di: 45m Jog • Do: 12km Tempo • Zo: 35km Wandelen", note: "" },
+            { w: "16", d: "13 - 19 apr", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" }
         ]},
-        { name: "FASE 3: PIEK (MEI-JUN)", weeks: [
-            {w:18, d:"4-10 mei", t:"40km", n:"40KM"}, {w:22, d:"1-7 jun", t:"50km", n:"50KM"},
-            {w:26, d:"22-28 jun", t:"30km", n:"NACHT"}
+        { phase: "FASE 3: PIEK VOLUME (MEI - JUN)", weeks: [
+            { w: "18", d: "4 - 10 mei", task: "Di: 50m Jog • Do: 14km Tempo • Zo: 40km Wandelen", note: "🎯 40KM" },
+            { w: "19", d: "11 - 17 mei", task: "Di: 50m Jog • Do: Kracht • Zo: 20km Herstel", note: "" },
+            { w: "20", d: "18 - 24 mei", task: "Di: Interval • Do: 14km Tempo • Zo: 42km Wandelen", note: "🎯 MARATHON" },
+            { w: "21", d: "25 - 31 mei", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" },
+            { w: "22", d: "1 - 7 juni", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 50km Wandelen", note: "🎯 50KM" },
+            { w: "24", d: "15 - 21 juni", task: "Di: Interval • Do: 10km Los • Zo: 25km Wandelen", note: "" },
+            { w: "26", d: "22 - 28 juni", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km NACHT", note: "🌙 NACHT" }
         ]},
-        { name: "FASE 4: FINALE (JUL-AUG)", weeks: [
-            {w:29, d:"13-19 jul", t:"60km", n:"TEST"}, {w:33, d:"10-14 aug", t:"100KM", n:"GO!"}
+        { phase: "FASE 4: FINALE & TAPER (JUL - AUG)", weeks: [
+            { w: "27", d: "29 jun - 5 jul", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 40km Wandelen", note: "" },
+            { w: "28", d: "6 - 12 juli", task: "Di: Interval • Do: Kracht • Zo: 20km Herstel", note: "💤 HERSTEL" },
+            { w: "29", d: "13 - 19 juli", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 60km TEST", note: "🎯 60KM" },
+            { w: "30", d: "20 - 26 juli", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km Wandelen", note: "" },
+            { w: "31", d: "27 jul - 2 aug", task: "Di: 30m Jog • Do: 8km Los • Zo: 20km Wandelen", note: "📉 TAPER" },
+            { w: "32", d: "3 - 9 aug", task: "Di: 20m Jog • Do: Kracht • Zo: 12km Los", note: "📉 TAPER" },
+            { w: "33", d: "10 - 14 aug", task: "Di: Rust • Do: 5km Los • Zo: 14 AUG: 100KM!", note: "🏆 D-DAY" }
         ]}
     ];
-
-    let data = JSON.parse(localStorage.getItem(DB_NAME)) || [];
-    let chart = null;
-
-    function init() {
-        document.getElementById('inDate').valueAsDate = new Date();
-        render();
-        renderSchedule();
-        updateTime();
-    }
-
-    function switchTab(id, btn) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        btn.classList.add('active');
-        if(id === 'dash') renderChart();
-    }
-
-    function addEntry() {
-        const km = parseFloat(document.getElementById('inKm').value);
-        const min = parseInt(document.getElementById('inMin').value);
-        if(!km || !min) return;
-        
-        const entry = {
-            id: Date.now(),
-            date: document.getElementById('inDate').value,
-            km: km, min: min,
-            knee: parseInt(document.getElementById('inKnee').value) || 0,
-            night: document.getElementById('inNight').value === 'true',
-            speed: (km / (min/60)).toFixed(2)
-        };
-        
-        data.push(entry);
-        localStorage.setItem(DB_NAME, JSON.stringify(data));
-        checkMilestones(data.reduce((s,x)=>s+x.km, 0));
-        render();
-        switchTab('dash', document.querySelector('.nav-item'));
-    }
-
-    function render() {
-        const total = data.reduce((s, x) => s + x.km, 0);
-        const avgKnee = data.length ? (data.reduce((s, x) => s + x.knee, 0) / data.length).toFixed(1) : 0;
-        const avgSpd = data.length ? (data.reduce((s, x) => s + parseFloat(x.speed), 0) / data.length).toFixed(1) : 0;
-
-        document.getElementById('statKm').innerText = total.toFixed(1);
-        document.getElementById('statCount').innerText = data.length;
-        document.getElementById('statKnee').innerText = avgKnee;
-        document.getElementById('statSpeed').innerText = avgSpd;
-
-        const p = Math.min((total/TARGET)*100, 100);
-        document.getElementById('progressBar').style.width = p + '%';
-        document.getElementById('progLabel').innerText = Math.round(p) + '%';
-        document.getElementById('remKm').innerText = `Nog ${(TARGET-total).toFixed(1)} km tot doel`;
-
-        const hist = data.slice().reverse().map(t => `
-            <div class="card list-item">
-                <div><b>${t.km}km</b> ${t.night?'🌙':''} <br><small>${t.date} | ${t.speed}km/u</small></div>
-                <button onclick="del(${t.id})" style="border:none;background:none;font-size:1.2rem;">🗑️</button>
-            </div>`).join('');
-        document.getElementById('history').innerHTML = hist;
-        renderChart();
-    }
-
-    function renderSchedule() {
-        let h = '';
-        PHASES.forEach(p => {
-            h += `<div class="phase-header">${p.name}</div>`;
-            p.weeks.forEach(w => {
-                h += `<div class="list-item"><div>Week ${w.w}: <b>${w.t}</b><br><small>${w.d}</small></div>${w.n?`<span class="badge">${w.n}</span>`:''}</div>`;
-            });
-        });
-        document.getElementById('scheduleBox').innerHTML = h;
-    }
-
-    function renderChart() {
-        const ctx = document.getElementById('mainChart').getContext('2d');
-        if(chart) chart.destroy();
-        const last = data.slice(-7);
-        chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: last.map(x => x.date.split('-')[2]),
-                datasets: [{ label: 'Snelheid', data: last.map(x=>x.speed), borderColor: '#1a2a6c', tension: 0.3, fill: true, backgroundColor: 'rgba(26,42,108,0.1)' }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-    }
-
-    function checkMilestones(total) {
-        MILESTONES.forEach(m => {
-            if(total >= m.km && !localStorage.getItem('m_'+m.km)) {
-                showNotif(m.msg);
-                localStorage.setItem('m_'+m.km, 'true');
-            }
-        });
-    }
-
-    function showNotif(m) {
-        const el = document.getElementById('notif');
-        el.innerText = m;
-        el.style.display = 'block';
-        setTimeout(() => el.style.display = 'none', 4000);
-    }
-
-    function del(id) { if(confirm('Wissen?')) { data = data.filter(x=>x.id!==id); localStorage.setItem(DB_NAME, JSON.stringify(data)); render(); } }
-    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function updateTime() { document.getElementById('countdown').innerText = `⏰ Nog ${Math.floor((EVENT - new Date())/(1000*60*60*24))} dagen`; }
-    
-    function exportData() {
-        const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'dodentocht_data.json'; a.click();
-    }
-
-    function importData(e) {
-        const reader = new FileReader();
-        reader.onload = (ev) => { data = JSON.parse(ev.target.result); localStorage.setItem(DB_NAME, JSON.stringify(data)); render(); };
-        reader.readAsText(e.target.files[0]);
-    }
-
-    window.onload = init;
-</script>
-</body>
-</html>
