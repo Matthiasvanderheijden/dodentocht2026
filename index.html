@@ -287,6 +287,23 @@
     0% { opacity: 1; transform: scale(1); } 
     100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.5); } 
 }
+
+        /* Stijl voor de ballonnen */
+.balloon {
+    position: absolute;
+    width: 30px;
+    height: 40px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    opacity: 0.8;
+    z-index: 9998;
+    animation: fly-up 6s linear forwards;
+}
+
+/* De vlieg-animatie voor ballonnen */
+@keyframes fly-up {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-20vh) rotate(20deg); opacity: 0; }
+}
         
         .phase-header { 
             background: var(--primary); 
@@ -734,7 +751,8 @@ const GREETINGS = [
         document.getElementById('tMin').value = '';
         document.getElementById('tKnee').value = '0';
         
-        doCelebration();
+        doCelebration();   // De confetti
+        releaseBalloons(); // De nieuwe ballonnen
     }
 
     // ==================== DELETE TRAINING ====================
@@ -841,6 +859,29 @@ function doCelebration() {
         
         container.appendChild(p);
         p.addEventListener('animationend', () => p.remove());
+    }
+}
+    
+    function releaseBalloons() {
+    const container = document.getElementById('celebrationContainer');
+    const colors = ['#e74c3c', '#3498db', '#9b59b6', '#f1c40f', '#e67e22'];
+    
+    // We laten 8 ballonnen opstijgen
+    for (let i = 0; i < 8; i++) {
+        const b = document.createElement('div');
+        b.classList.add('balloon');
+        b.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Willekeurige startpositie onderaan het scherm
+        b.style.left = Math.random() * 90 + 'vw';
+        
+        // Willekeurige vertraging zodat ze niet allemaal tegelijk vertrekken
+        b.style.animationDelay = (Math.random() * 2) + 's';
+        
+        container.appendChild(b);
+        
+        // Verwijderen na 5 seconden (animatietijd + vertraging)
+        setTimeout(() => b.remove(), 8000);
     }
 }
     
@@ -1027,6 +1068,7 @@ function doCelebration() {
 </script>
 </body>
 </html>
+
 
 
 
