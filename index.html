@@ -278,7 +278,7 @@
     height: 10px;
     border-radius: 50%;
     opacity: 0;
-    animation: celebrate-up 1.5s forwards ease-out;
+    animation: celebrate-up 4s forwards ease-out;
     pointer-events: none;
     z-index: 9999;
 }
@@ -833,8 +833,8 @@ function doCelebration() {
         p.style.top = Math.random() * 100 + 'vh';
         
         // Laat ze alle kanten op spatten
-        const x = (Math.random() - 0.5) * 300;
-        const y = (Math.random() - 0.5) * 300;
+        const x = (Math.random() - 0.5) * 500;
+        const y = (Math.random() - 0.5) * 500;
         
         p.style.setProperty('--x', `${x}px`);
         p.style.setProperty('--y', `${y}px`);
@@ -1027,6 +1027,7 @@ function doCelebration() {
 </script>
 </body>
 </html>
+
 
 
 
