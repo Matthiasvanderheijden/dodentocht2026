@@ -40,16 +40,13 @@
         .nav-item.active { color: var(--primary); font-weight: bold; }
         .nav-icon { font-size: 1.5rem; margin-bottom: 2px; }
 
-        /* Vuurwerk & Ballonnen */
         .celebration-particle { position: absolute; width: 10px; height: 10px; border-radius: 50%; opacity: 0; animation: celebrate-up 4s forwards ease-out; pointer-events: none; z-index: 9999; }
         @keyframes celebrate-up { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.5); } }
         
         .balloon { position: absolute; width: 30px; height: 40px; border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%; opacity: 0.9; z-index: 9998; animation: fly-up 7s linear forwards; }
-        .balloon::after { content: "↓"; position: absolute; bottom: -15px; left: 12px; font-size: 15px; color: rgba(0,0,0,0.1); }
         @keyframes fly-up { 0% { transform: translateY(100vh); opacity: 1; } 100% { transform: translateY(-20vh); opacity: 0; } }
 
         .notification { position: fixed; top: 15px; left: 15px; right: 15px; background: var(--accent); color: white; padding: 15px; border-radius: 15px; z-index: 2000; display: none; text-align: center; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-
         .btn-main { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .schedule-week { background: var(--card-bg); padding: 12px; border-radius: 12px; margin-bottom: 8px; border-left: 4px solid var(--accent); font-size: 0.85rem; }
         .phase-header { background: var(--primary); color: white; padding: 8px 12px; border-radius: 8px; font-size: 0.75rem; margin: 15px 0 8px; font-weight: bold; }
@@ -147,12 +144,11 @@
     const TARGET_KM = 800;
 
     let trainings = [];
-    let chart = null;
     let isSupporter = false;
+    let chart = null;
 
     const SCHEDULE_DATA = [
-        { phase: "FASE 1: BASIS", weeks: [{ w: "1", d: "29 dec - 4 jan", task: "Di: Rust • Zo: 12km Wandelen", note: "START" }, { w: "6", d: "2 - 8 feb", task: "Zo: 20km Wandelen", note: "20KM" }] },
-        { phase: "FASE 4: FINALE", weeks: [{ w: "33", d: "10 - 14 aug", task: "Vr: 14 AUG: 100KM!", note: "FINISH" }] }
+        { phase: "FASE 1", weeks: [{ w: "1", d: "29 dec - 4 jan", task: "Start!", note: "START" }] }
     ];
 
     function init() {
@@ -168,9 +164,9 @@
                 document.getElementById('mainTitle').innerText = "👀 SUPPORTER VIEW";
                 document.getElementById('editDonatieBtn').style.display = 'none';
                 document.getElementById('shareLinkBtn').style.display = 'none';
-                document.querySelectorAll('.nav-item')[1].style.display = 'none'; // Verberg Log tab
+                document.querySelectorAll('.nav-item')[1].style.display = 'none';
                 document.body.style.borderTop = "8px solid var(--accent)";
-            } catch(e) { alert("Link ongeldig"); loadData(); }
+            } catch(e) { loadData(); }
         } else {
             loadData();
         }
@@ -178,7 +174,6 @@
         document.getElementById('tDate').valueAsDate = new Date();
         renderAll();
         renderSchedule();
-        showWelcomeMessage();
         updateCountdown();
         setInterval(updateCountdown, 60000);
     }
@@ -192,64 +187,11 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(trainings));
     }
 
-    function saveTraining() {
-        const km = parseFloat(document.getElementById('tKm').value);
-        const min = parseInt(document.getElementById('tMin').value);
-        if(!km || !min) return alert('Vul alles in!');
-        
-        trainings.push({ 
-            id: Date.now(), 
-            date: document.getElementById('tDate').value, 
-            km, min, 
-            knee: document.getElementById('tKnee').value, 
-            night: document.getElementById('tNight').value === 'true',
-            speed: (km/(min/60)).toFixed(2) 
-        });
-        
-        saveData();
-        renderAll();
-        doCelebration();
-        releaseBalloons();
-        document.getElementById('tKm').value = ''; document.getElementById('tMin').value = '';
-    }
-
-    function doCelebration() {
-        const container = document.getElementById('celebrationContainer');
-        const colors = ['#f39c12', '#48bb78', '#1a2a6c', '#b21f1f', '#ffffff'];
-        for (let i = 0; i < 50; i++) {
-            const p = document.createElement('div');
-            p.classList.add('celebration-particle');
-            p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.top = Math.random() * 100 + 'vh';
-            const x = (Math.random() - 0.5) * 400;
-            const y = (Math.random() - 0.5) * 400;
-            p.style.setProperty('--x', `${x}px`);
-            p.style.setProperty('--y', `${y}px`);
-            container.appendChild(p);
-            p.addEventListener('animationend', () => p.remove());
-        }
-    }
-
-    function releaseBalloons() {
-        const container = document.getElementById('celebrationContainer');
-        const colors = ['#e74c3c', '#3498db', '#9b59b6', '#f1c40f'];
-        for (let i = 0; i < 8; i++) {
-            const b = document.createElement('div');
-            b.classList.add('balloon');
-            b.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            b.style.left = Math.random() * 85 + 'vw';
-            b.style.animationDelay = (Math.random() * 2) + 's';
-            container.appendChild(b);
-            setTimeout(() => b.remove(), 9000);
-        }
-    }
-
     function checkKneeHealth() {
         if (trainings.length < 3) return "";
         const last3 = trainings.slice(-3);
         const avg = last3.reduce((s, x) => s + (parseInt(x.knee) || 0), 0) / 3;
-        if (avg >= 7) return `<div class="card" style="border: 2px solid #e53e3e; background: #fff5f5;"><h3 style="color:#e53e3e; margin-bottom:5px;">⚠️ KNIE ALERT</h3><p style="font-size:0.75rem;">Je pijnscore is hoog (${avg.toFixed(1)}). Neem extra rust!</p></div>`;
+        if (avg >= 7) return `<div class="card" style="border: 2px solid #e53e3e; background: #fff5f5;"><h3 style="color:#e53e3e;">⚠️ KNIE ALERT</h3><p style="font-size:0.75rem;">Gemiddelde pijn score: ${avg.toFixed(1)}. Neem rust!</p></div>`;
         return "";
     }
 
@@ -271,7 +213,40 @@
     function generateSupporterLink() {
         const pack = { t: trainings, d: localStorage.getItem(DONATIE_KEY) || "0" };
         const url = window.location.origin + window.location.pathname + '?view=' + btoa(JSON.stringify(pack));
-        navigator.clipboard.writeText(url).then(() => alert("✅ Link gekopiëerd! Deel deze link met supporters."));
+        navigator.clipboard.writeText(url).then(() => alert("✅ Link gekopieerd!"));
+    }
+
+    function saveTraining() {
+        const km = parseFloat(document.getElementById('tKm').value);
+        const min = parseInt(document.getElementById('tMin').value);
+        if(!km || !min) return alert('Vul alles in!');
+        trainings.push({ id: Date.now(), date: document.getElementById('tDate').value, km, min, knee: document.getElementById('tKnee').value, night: document.getElementById('tNight').value === 'true', speed: (km/(min/60)).toFixed(2) });
+        saveData(); renderAll(); doCelebration(); releaseBalloons();
+        document.getElementById('tKm').value = ''; document.getElementById('tMin').value = '';
+    }
+
+    function doCelebration() {
+        const container = document.getElementById('celebrationContainer');
+        const colors = ['#f39c12', '#48bb78', '#1a2a6c', '#b21f1f', '#ffffff'];
+        for (let i = 0; i < 50; i++) {
+            const p = document.createElement('div');
+            p.classList.add('celebration-particle');
+            p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            p.style.left = Math.random() * 100 + 'vw'; p.style.top = Math.random() * 100 + 'vh';
+            const x = (Math.random() - 0.5) * 400; const y = (Math.random() - 0.5) * 400;
+            p.style.setProperty('--x', `${x}px`); p.style.setProperty('--y', `${y}px`);
+            container.appendChild(p); p.addEventListener('animationend', () => p.remove());
+        }
+    }
+
+    function releaseBalloons() {
+        const container = document.getElementById('celebrationContainer');
+        for (let i = 0; i < 8; i++) {
+            const b = document.createElement('div');
+            b.classList.add('balloon'); b.style.backgroundColor = ['#e74c3c', '#3498db', '#9b59b6', '#f1c40f'][Math.floor(Math.random()*4)];
+            b.style.left = Math.random() * 85 + 'vw'; b.style.animationDelay = (Math.random() * 2) + 's';
+            container.appendChild(b); setTimeout(() => b.remove(), 9000);
+        }
     }
 
     function renderAll() {
@@ -281,19 +256,17 @@
         document.getElementById('avgSpeed').innerText = trainings.length ? (trainings.reduce((s,x)=>s+parseFloat(x.speed),0)/trainings.length).toFixed(1) : 0;
         document.getElementById('kneeAvg').innerText = trainings.length ? (trainings.reduce((s,x)=>s+(parseInt(x.knee)||0),0)/trainings.length).toFixed(1) : 0;
         document.getElementById('donatieBedrag').innerText = "€ " + (localStorage.getItem(DONATIE_KEY) || "0");
-        
         const p = Math.min((total/TARGET_KM)*100, 100);
         document.getElementById('progressBar').style.width = p + '%';
         document.getElementById('progressBar').innerText = Math.round(p) + '%';
         document.getElementById('progText').innerText = `Nog ${(TARGET_KM-total).toFixed(1)} km te gaan`;
-        
         document.getElementById('dashboardAlerts').innerHTML = checkKneeHealth() + getMilestones();
-        document.getElementById('historyList').innerHTML = trainings.slice().reverse().map(t => `<div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:10px;"><div><b>${t.km}km</b> ${t.night?'🌙':''} <small>(${t.date})</small></div><button onclick="delT(${t.id})" style="border:none; background:none; font-size:1.2rem; cursor:pointer;">🗑️</button></div>`).join('');
+        document.getElementById('historyList').innerHTML = trainings.slice().reverse().map(t => `<div class="card" style="display:flex; justify-content:space-between;"><div><b>${t.km}km</b> ${t.night?'🌙':''} <small>(${t.date})</small></div><button onclick="delT(${t.id})" style="border:none; background:none; cursor:pointer;">🗑️</button></div>`).join('');
         renderChart();
     }
 
     function renderSchedule() {
-        document.getElementById('mobileSchedule').innerHTML = SCHEDULE_DATA.map(p => `<div class="phase-header">${p.phase}</div>` + p.weeks.map(w => `<div class="schedule-week"><b>Week ${w.w}</b> - ${w.note || ''}<br>${w.task}</div>`).join('')).join('');
+        document.getElementById('mobileSchedule').innerHTML = SCHEDULE_DATA.map(p => `<div class="phase-header">${p.phase}</div>` + p.weeks.map(w => `<div class="schedule-week"><b>Week ${w.w}</b><br>${w.task}</div>`).join('')).join('');
     }
 
     function renderChart() {
@@ -311,11 +284,9 @@
     }
 
     function showWelcomeMessage() {
-        const text = ["Klaar voor je kilometers?", "Lekker bezig!", "Dodentocht modus: AAN"];
         const notif = document.getElementById('notif');
-        notif.innerText = text[Math.floor(Math.random() * text.length)];
-        notif.style.display = 'block';
-        setTimeout(() => { notif.style.display = 'none'; }, 4000);
+        notif.innerText = "Welkom terug!"; notif.style.display = 'block';
+        setTimeout(() => { notif.style.display = 'none'; }, 3000);
     }
 
     function updateCountdown() { const days = Math.floor((EVENT_DATE - new Date())/(1000*60*60*24)); document.getElementById('countdown').innerText = `⏰ Nog ${days} dagen tot Bornem`; }
