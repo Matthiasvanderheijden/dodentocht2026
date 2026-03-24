@@ -152,6 +152,7 @@
 <script>
     const STORAGE_KEY = 'dodentocht_v10_ultimate';
     const DONATIE_KEY = 'doto_donatie_val';
+    const THEME_KEY = 'dodentocht_v10_theme';
     const EVENT_DATE = new Date('2026-08-14');
     const TARGET_KM = 800;
 
@@ -221,18 +222,27 @@
         if (viewData) {
             isSupporter = true;
             try {
-                // Decodeer de URL veilig (ook voor speciale tekens)
                 const decoded = JSON.parse(decodeURIComponent(escape(atob(viewData))));
                 trainings = decoded.t;
                 localStorage.setItem(DONATIE_KEY, decoded.d);
                 
-                // Pas UI aan voor supporter
                 document.getElementById('mainTitle').innerText = "👀 SUPPORTER VIEW";
-                document.getElementById('editDonatieBtn').style.display = 'none';
-                document.getElementById('shareLinkBtn').style.display = 'none';
-                document.getElementById('navLog').style.display = 'none';
-                document.getElementById('navLead').style.display = 'none';
-                document.getElementById('beheerCard').innerHTML = "<h2>Supporter Modus</h2><p>Je kunt de data alleen bekijken.</p>";
+                
+                const editBtn = document.getElementById('editDonatieBtn');
+                if (editBtn) editBtn.style.display = 'none';
+                
+                const shareBtn = document.getElementById('shareLinkBtn');
+                if (shareBtn) shareBtn.style.display = 'none';
+                
+                const navLog = document.getElementById('navLog');
+                if (navLog) navLog.style.display = 'none';
+                
+                const navLead = document.getElementById('navLead');
+                if (navLead) navLead.style.display = 'none';
+                
+                const beheerCard = document.getElementById('beheerCard');
+                if (beheerCard) beheerCard.innerHTML = "<h2>Supporter Modus</h2><p>Je bekijkt de app in alleen-lezen modus.</p>";
+                
                 document.body.style.borderTop = "8px solid var(--accent)";
             } catch(e) { 
                 alert("De supporter-link is ongeldig. Jouw eigen data wordt geladen."); 
@@ -241,6 +251,7 @@
             }
         } else {
             loadData();
+            loadTheme();
         }
 
         document.getElementById('tDate').valueAsDate = new Date();
@@ -259,6 +270,12 @@
     function saveData() {
         if(isSupporter) return;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(trainings));
+    }
+    
+    function loadTheme() {
+        if (localStorage.getItem(THEME_KEY) === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
     }
 
     function checkKneeHealth() {
@@ -286,7 +303,6 @@
 
     function generateSupporterLink() {
         const pack = { t: trainings, d: localStorage.getItem(DONATIE_KEY) || "0" };
-        // Veilige encodering
         const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(pack))));
         const url = window.location.origin + window.location.pathname + '?view=' + encoded;
         navigator.clipboard.writeText(url).then(() => alert("✅ Link gekopieerd! Deel hem op je Berrefonds pagina."));
@@ -308,11 +324,10 @@
         
         saveData(); 
         renderAll(); 
-        switchTab('dash', document.querySelector('.nav-item')); // Keer terug naar dashboard
+        switchTab('dash', document.querySelector('.nav-item')); 
         doCelebration(); 
         releaseBalloons();
         
-        // Reset velden
         document.getElementById('tKm').value = ''; 
         document.getElementById('tMin').value = '';
         document.getElementById('tKnee').value = '0';
@@ -358,7 +373,6 @@
         
         document.getElementById('dashboardAlerts').innerHTML = checkKneeHealth() + getMilestones();
         
-        // Render geschiedenis
         document.getElementById('historyList').innerHTML = trainings.slice().reverse().map(t => `
             <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
