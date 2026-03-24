@@ -7,9 +7,8 @@
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="berrefonds icon.png">
+    <link rel="apple-touch-icon" href="berrefonds_icon.png">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #1a2a6c; --secondary: #b21f1f; --accent: #f39c12;
@@ -31,12 +30,12 @@
         .progress-bar { height: 100%; background: linear-gradient(90deg, #48bb78, #38a169); width: 0%; transition: width 1s; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; }
         
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: var(--card-bg); padding: 15px; border-radius: 18px; text-align: center; border-bottom: 3px solid var(--primary); }
+        .stat-box { background: var(--card-bg); padding: 15px; border-radius: 18px; text-align: center; border-bottom: 3px solid var(--primary); transition: background-color 0.3s; }
         .stat-value { font-size: 1.3rem; font-weight: 800; display: block; margin-top: 5px; }
         .stat-label { font-size: 0.65rem; text-transform: uppercase; color: #718096; font-weight: bold; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; padding: 10px 0 calc(10px + var(--safe-bottom)); box-shadow: 0 -2px 15px rgba(0,0,0,0.1); z-index: 1000; }
-        .nav-item { flex: 1; border: none; background: none; color: #718096; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; padding: 10px 0 calc(10px + var(--safe-bottom)); box-shadow: 0 -2px 15px rgba(0,0,0,0.1); z-index: 1000; transition: background-color 0.3s; }
+        .nav-item { flex: 1; border: none; background: none; color: #718096; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: color 0.3s; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
         .nav-icon { font-size: 1.5rem; margin-bottom: 2px; }
 
@@ -44,12 +43,18 @@
         @keyframes celebrate-up { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.5); } }
         
         .balloon { position: absolute; width: 30px; height: 40px; border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%; opacity: 0.9; z-index: 9998; animation: fly-up 7s linear forwards; }
+        .balloon::after { content: "↓"; position: absolute; bottom: -15px; left: 12px; font-size: 15px; color: rgba(0,0,0,0.1); }
         @keyframes fly-up { 0% { transform: translateY(100vh); opacity: 1; } 100% { transform: translateY(-20vh); opacity: 0; } }
 
         .notification { position: fixed; top: 15px; left: 15px; right: 15px; background: var(--accent); color: white; padding: 15px; border-radius: 15px; z-index: 2000; display: none; text-align: center; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .btn-main { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .schedule-week { background: var(--card-bg); padding: 12px; border-radius: 12px; margin-bottom: 8px; border-left: 4px solid var(--accent); font-size: 0.85rem; }
+        .btn-main { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: transform 0.2s; }
+        .btn-main:active { transform: scale(0.98); }
+        .schedule-week { background: var(--card-bg); padding: 12px; border-radius: 12px; margin-bottom: 8px; border-left: 4px solid var(--accent); font-size: 0.85rem; transition: background-color 0.3s; }
         .phase-header { background: var(--primary); color: white; padding: 8px 12px; border-radius: 8px; font-size: 0.75rem; margin: 15px 0 8px; font-weight: bold; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -95,21 +100,19 @@
             <div class="stat-box"><span class="stat-label">Sessies</span><span id="totalSess" class="stat-value">0</span></div>
             <div class="stat-box"><span class="stat-label">Knie Score</span><span id="kneeAvg" class="stat-value">0</span></div>
         </div>
-
-        <div class="card"><h2>📈 Evolutie</h2><canvas id="speedChart" style="height: 180px;"></canvas></div>
     </div>
 
     <div id="log" class="tab-content">
         <div class="card">
             <h2>📝 Training Loggen</h2>
-            <input type="date" id="tDate" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;">
+            <input type="date" id="tDate" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd; background:var(--card-bg); color:var(--text);">
             <div style="display: flex; gap: 10px; margin-bottom:10px;">
-                <input type="number" id="tKm" step="0.1" placeholder="KM" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd;">
-                <input type="number" id="tMin" placeholder="Minuten" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd;">
+                <input type="number" id="tKm" step="0.1" placeholder="KM" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:var(--card-bg); color:var(--text);">
+                <input type="number" id="tMin" placeholder="Minuten" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:var(--card-bg); color:var(--text);">
             </div>
             <div style="display: flex; gap: 10px; margin-bottom:10px;">
-                <select id="tKnee" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd;"><option value="0">Knie Pijn (0-10)</option><script>for(let i=1;i<=10;i++)document.write(`<option value="${i}">${i}</option>`)</script></select>
-                <select id="tNight" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd;"><option value="false">Dag</option><option value="true">Nacht 🌙</option></select>
+                <select id="tKnee" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:var(--card-bg); color:var(--text);"><option value="0">Knie Pijn (0-10)</option><script>for(let i=1;i<=10;i++)document.write(`<option value="${i}">${i}</option>`)</script></select>
+                <select id="tNight" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:var(--card-bg); color:var(--text);"><option value="false">Dag</option><option value="true">Nacht 🌙</option></select>
             </div>
             <button class="btn-main" onclick="saveTraining()">💾 TRAINING OPSLAAN</button>
         </div>
@@ -120,10 +123,18 @@
         <div class="card"><h2>📅 Trainingsplan</h2><div id="mobileSchedule"></div></div>
     </div>
 
-    <div id="lead" class="tab-content">
-        <div class="card"><h2>🏆 Leaderboard</h2><div id="friendsList"></div></div>
+    <div id="exercises" class="tab-content">
         <div class="card">
-            <h2>⚙️ Beheer</h2>
+            <h2>💪 Knie & Spierversterking</h2>
+            <p style="font-size: 0.8rem; color: #718096; margin-bottom: 15px;">Doe deze oefeningen 2x per week op je 'Kracht' dagen voor een blessurevrije Dodentocht.</p>
+            <div id="exerciseList"></div>
+        </div>
+    </div>
+
+    <div id="lead" class="tab-content">
+        <div class="card" id="beheerCard">
+            <h2>⚙️ Beheer & Backup</h2>
+            <p style="font-size: 0.8rem; color: #718096; margin-bottom: 15px;">Maak af en toe een backup van je data voor de zekerheid.</p>
             <button class="btn-main" style="background:#718096;" onclick="exportData()">📥 DOWNLOAD BACKUP</button>
             <button class="btn-main" style="background:#e53e3e;" onclick="clearAllData()">🗑️ ALLES WISSEN</button>
         </div>
@@ -132,9 +143,10 @@
 
 <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchTab('dash', this)"><span class="nav-icon">📊</span>Stats</button>
-    <button class="nav-item" onclick="switchTab('log', this)"><span class="nav-icon">📝</span>Log</button>
+    <button class="nav-item" id="navLog" onclick="switchTab('log', this)"><span class="nav-icon">📝</span>Log</button>
     <button class="nav-item" onclick="switchTab('sch', this)"><span class="nav-icon">📅</span>Plan</button>
-    <button class="nav-item" onclick="switchTab('lead', this)"><span class="nav-icon">🏆</span>Groep</button>
+    <button class="nav-item" onclick="switchTab('exercises', this)"><span class="nav-icon">💪</span>Oefen</button>
+    <button class="nav-item" id="navLead" onclick="switchTab('lead', this)"><span class="nav-icon">⚙️</span>Beheer</button>
 </nav>
 
 <script>
@@ -145,10 +157,61 @@
 
     let trainings = [];
     let isSupporter = false;
-    let chart = null;
 
+    // VOLLEDIG 33-WEKEN SCHEMA
     const SCHEDULE_DATA = [
-        { phase: "FASE 1", weeks: [{ w: "1", d: "29 dec - 4 jan", task: "Start!", note: "START" }] }
+        { phase: "FASE 1: BASIS & KNIE HERSTEL (JAN - FEB)", weeks: [
+            { w: "1", d: "29 dec - 4 jan", task: "Di: Rust • Do: 1 jan 5km Tempo • Zo: 12km Wandelen", note: "🎯 START" },
+            { w: "2", d: "5 - 11 jan", task: "Di: 20m Jog • Do: Kracht • Zo: 14km Wandelen", note: "" },
+            { w: "3", d: "12 - 18 jan", task: "Di: 20m Jog • Do: 6km Tempo • Zo: 16km Wandelen", note: "" },
+            { w: "4", d: "19 - 25 jan", task: "Di: Rust • Do: Kracht • Zo: 10km Herstel", note: "💤 HERSTEL" },
+            { w: "5", d: "26 jan - 1 feb", task: "Di: 25m Jog • Do: 7km Tempo • Zo: 18km Wandelen", note: "" },
+            { w: "6", d: "2 - 8 feb", task: "Di: 30m Jog • Do: Kracht • Zo: 20km Wandelen", note: "🎯 20KM" },
+            { w: "7", d: "9 - 15 feb", task: "Di: 30m Jog • Do: 8km Tempo • Zo: 22km Wandelen", note: "" },
+            { w: "8", d: "16 - 22 feb", task: "Di: Rust • Do: Kracht • Zo: 12km Herstel", note: "💤 HERSTEL" }
+        ]},
+        { phase: "FASE 2: AFSTAND OPBOUW (MRT - APR)", weeks: [
+            { w: "9", d: "23 feb - 1 mrt", task: "Di: 35m Jog • Do: 8km Tempo • Zo: 25km Wandelen", note: "" },
+            { w: "10", d: "2 - 8 mrt", task: "Di: 35m Jog • Do: Kracht • Zo: 15km Herstel", note: "" },
+            { w: "11", d: "9 - 15 mrt", task: "Di: 40m Jog • Do: 10km Tempo • Zo: 28km Wandelen", note: "" },
+            { w: "12", d: "16 - 22 mrt", task: "Di: Rust • Do: Kracht • Zo: 12km Herstel", note: "💤 HERSTEL" },
+            { w: "13", d: "23 - 29 mrt", task: "Di: 40m Jog • Do: 10km Tempo • Zo: 32km Wandelen", note: "🎯 30KM+" },
+            { w: "14", d: "30 mrt - 5 apr", task: "Di: 45m Jog • Do: Kracht • Zo: 20km Wandelen", note: "" },
+            { w: "15", d: "6 - 12 apr", task: "Di: 45m Jog • Do: 12km Tempo • Zo: 35km Wandelen", note: "" },
+            { w: "16", d: "13 - 19 apr", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" },
+            { w: "17", d: "20 - 26 apr", task: "Di: 45m Jog • Do: Kracht • Zo: 22km Wandelen", note: "" }
+        ]},
+        { phase: "FASE 3: PIEK VOLUME (MEI - JUN)", weeks: [
+            { w: "18", d: "27 apr - 3 mei", task: "Di: 45m Jog • Do: 14km Tempo • Zo: 25km Wandelen", note: "" },
+            { w: "19", d: "4 - 10 mei", task: "Di: 50m Jog • Do: 14km Tempo • Zo: 40km Wandelen", note: "🎯 40KM" },
+            { w: "20", d: "11 - 17 mei", task: "Di: 50m Jog • Do: Kracht • Zo: 20km Herstel", note: "" },
+            { w: "21", d: "18 - 24 mei", task: "Di: Interval • Do: 14km Tempo • Zo: 42km Wandelen", note: "🎯 MARATHON" },
+            { w: "22", d: "25 - 31 mei", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" },
+            { w: "23", d: "1 - 7 juni", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 50km Wandelen", note: "🎯 50KM" },
+            { w: "24", d: "8 - 14 juni", task: "Di: 60m Jog • Do: 14km Tempo • Zo: 35km Wandelen", note: "" },
+            { w: "25", d: "15 - 21 juni", task: "Di: Interval • Do: 10km Los • Zo: 25km Wandelen", note: "" },
+            { w: "26", d: "22 - 28 juni", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km NACHT", note: "🌙 NACHT" }
+        ]},
+        { phase: "FASE 4: FINALE & TAPER (JUL - AUG)", weeks: [
+            { w: "27", d: "29 jun - 5 jul", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 40km Wandelen", note: "" },
+            { w: "28", d: "6 - 12 juli", task: "Di: Interval • Do: Kracht • Zo: 20km Herstel", note: "💤 HERSTEL" },
+            { w: "29", d: "13 - 19 juli", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 60km TEST", note: "🔥 60KM" },
+            { w: "30", d: "20 - 26 juli", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km Wandelen", note: "" },
+            { w: "31", d: "27 jul - 2 aug", task: "Di: 30m Jog • Do: 8km Los • Zo: 20km Wandelen", note: "📉 TAPER" },
+            { w: "32", d: "3 - 9 aug", task: "Di: 20m Jog • Do: Kracht • Zo: 12km Los", note: "📉 TAPER" },
+            { w: "33", d: "10 - 14 aug", task: "Di: Rust • Do: 5km Los • Vr: 14 AUG: 100KM!", note: "🏆 D-DAY" }
+        ]}
+    ];
+
+    // OEFENINGEN DATA
+    const EXERCISE_DATA = [
+        { title: "Wall Sit", reps: "3 x 45 sec", desc: "Met rug tegen muur, knieën 90 graden. Cruciaal voor kniestabiliteit.", icon: "🧘" },
+        { title: "Lunges", reps: "3 x 12 per been", desc: "Grote stap vooruit, zak door je knie. Versterkt billen en balans.", icon: "👣" },
+        { title: "Calf Raises", reps: "3 x 15", desc: "Op je tenen staan en rustig zakken. Voorkomt shin splints.", icon: "🆙" },
+        { title: "Glute Bridges", reps: "3 x 20", desc: "Liggend op rug, heupen omhoog duwen. Goed voor onderrug/hamstrings.", icon: "🏠" },
+        { title: "Single Leg Balance", reps: "2 x 60 sec", desc: "Sta op één been. Versterkt enkels voor onverharde paden.", icon: "⚖️" },
+        { title: "Plank", reps: "3 x 45 sec", desc: "Hou je lichaam recht als een plank. Onmisbaar voor je core-stabiliteit.", icon: "🧱" },
+        { title: "Squats", reps: "3 x 15", desc: "Zak door je heupen alsof je op een stoel gaat zitten. Dé basisoefening.", icon: "🏋️" }
     ];
 
     function init() {
@@ -158,15 +221,24 @@
         if (viewData) {
             isSupporter = true;
             try {
-                const decoded = JSON.parse(atob(viewData));
+                // Decodeer de URL veilig (ook voor speciale tekens)
+                const decoded = JSON.parse(decodeURIComponent(escape(atob(viewData))));
                 trainings = decoded.t;
                 localStorage.setItem(DONATIE_KEY, decoded.d);
+                
+                // Pas UI aan voor supporter
                 document.getElementById('mainTitle').innerText = "👀 SUPPORTER VIEW";
                 document.getElementById('editDonatieBtn').style.display = 'none';
                 document.getElementById('shareLinkBtn').style.display = 'none';
-                document.querySelectorAll('.nav-item')[1].style.display = 'none';
+                document.getElementById('navLog').style.display = 'none';
+                document.getElementById('navLead').style.display = 'none';
+                document.getElementById('beheerCard').innerHTML = "<h2>Supporter Modus</h2><p>Je kunt de data alleen bekijken.</p>";
                 document.body.style.borderTop = "8px solid var(--accent)";
-            } catch(e) { loadData(); }
+            } catch(e) { 
+                alert("De supporter-link is ongeldig. Jouw eigen data wordt geladen."); 
+                isSupporter = false;
+                loadData(); 
+            }
         } else {
             loadData();
         }
@@ -174,6 +246,8 @@
         document.getElementById('tDate').valueAsDate = new Date();
         renderAll();
         renderSchedule();
+        renderExercises();
+        showWelcomeMessage();
         updateCountdown();
         setInterval(updateCountdown, 60000);
     }
@@ -191,18 +265,18 @@
         if (trainings.length < 3) return "";
         const last3 = trainings.slice(-3);
         const avg = last3.reduce((s, x) => s + (parseInt(x.knee) || 0), 0) / 3;
-        if (avg >= 7) return `<div class="card" style="border: 2px solid #e53e3e; background: #fff5f5;"><h3 style="color:#e53e3e;">⚠️ KNIE ALERT</h3><p style="font-size:0.75rem;">Gemiddelde pijn score: ${avg.toFixed(1)}. Neem rust!</p></div>`;
+        if (avg >= 7) return `<div class="card" style="border: 2px solid #e53e3e; background: #fff5f5;"><h3 style="color:#e53e3e; margin-bottom:5px;">⚠️ KNIE ALERT</h3><p style="font-size:0.75rem;">Gemiddelde pijn score: ${avg.toFixed(1)}. Neem extra rust!</p></div>`;
         return "";
     }
 
     function getMilestones() {
         const total = trainings.reduce((s, x) => s + x.km, 0);
         let m = "";
-        if (total >= 200) m += "🥉 200km ";
-        if (total >= 400) m += "🥈 400km ";
-        if (total >= 600) m += "🥇 600km ";
-        if (total >= 800) m += "🏆 800km ";
-        return m ? `<div class="card" style="text-align:center;"><h3>🏅 MIJLPALEN</h3><p style="font-size:1.2rem;">${m}</p></div>` : "";
+        if (total >= 200) m += "🥉 200km <br>";
+        if (total >= 400) m += "🥈 400km <br>";
+        if (total >= 600) m += "🥇 600km <br>";
+        if (total >= 800) m += "🏆 800km <br>";
+        return m ? `<div class="card" style="text-align:center;"><h3>🏅 MIJLPALEN</h3><p style="font-size:1.1rem; line-height: 1.5; margin-top: 10px;">${m}</p></div>` : "";
     }
 
     function updateDonatie() {
@@ -212,17 +286,37 @@
 
     function generateSupporterLink() {
         const pack = { t: trainings, d: localStorage.getItem(DONATIE_KEY) || "0" };
-        const url = window.location.origin + window.location.pathname + '?view=' + btoa(JSON.stringify(pack));
-        navigator.clipboard.writeText(url).then(() => alert("✅ Link gekopieerd!"));
+        // Veilige encodering
+        const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(pack))));
+        const url = window.location.origin + window.location.pathname + '?view=' + encoded;
+        navigator.clipboard.writeText(url).then(() => alert("✅ Link gekopieerd! Deel hem op je Berrefonds pagina."));
     }
 
     function saveTraining() {
         const km = parseFloat(document.getElementById('tKm').value);
         const min = parseInt(document.getElementById('tMin').value);
-        if(!km || !min) return alert('Vul alles in!');
-        trainings.push({ id: Date.now(), date: document.getElementById('tDate').value, km, min, knee: document.getElementById('tKnee').value, night: document.getElementById('tNight').value === 'true', speed: (km/(min/60)).toFixed(2) });
-        saveData(); renderAll(); doCelebration(); releaseBalloons();
-        document.getElementById('tKm').value = ''; document.getElementById('tMin').value = '';
+        if(!km || !min) return alert('Vul een afstand en tijd in!');
+        
+        trainings.push({ 
+            id: Date.now(), 
+            date: document.getElementById('tDate').value, 
+            km, min, 
+            knee: document.getElementById('tKnee').value, 
+            night: document.getElementById('tNight').value === 'true', 
+            speed: (km/(min/60)).toFixed(2) 
+        });
+        
+        saveData(); 
+        renderAll(); 
+        switchTab('dash', document.querySelector('.nav-item')); // Keer terug naar dashboard
+        doCelebration(); 
+        releaseBalloons();
+        
+        // Reset velden
+        document.getElementById('tKm').value = ''; 
+        document.getElementById('tMin').value = '';
+        document.getElementById('tKnee').value = '0';
+        document.getElementById('tNight').value = 'false';
     }
 
     function doCelebration() {
@@ -256,44 +350,97 @@
         document.getElementById('avgSpeed').innerText = trainings.length ? (trainings.reduce((s,x)=>s+parseFloat(x.speed),0)/trainings.length).toFixed(1) : 0;
         document.getElementById('kneeAvg').innerText = trainings.length ? (trainings.reduce((s,x)=>s+(parseInt(x.knee)||0),0)/trainings.length).toFixed(1) : 0;
         document.getElementById('donatieBedrag').innerText = "€ " + (localStorage.getItem(DONATIE_KEY) || "0");
+        
         const p = Math.min((total/TARGET_KM)*100, 100);
         document.getElementById('progressBar').style.width = p + '%';
         document.getElementById('progressBar').innerText = Math.round(p) + '%';
         document.getElementById('progText').innerText = `Nog ${(TARGET_KM-total).toFixed(1)} km te gaan`;
+        
         document.getElementById('dashboardAlerts').innerHTML = checkKneeHealth() + getMilestones();
-        document.getElementById('historyList').innerHTML = trainings.slice().reverse().map(t => `<div class="card" style="display:flex; justify-content:space-between;"><div><b>${t.km}km</b> ${t.night?'🌙':''} <small>(${t.date})</small></div><button onclick="delT(${t.id})" style="border:none; background:none; cursor:pointer;">🗑️</button></div>`).join('');
-        renderChart();
+        
+        // Render geschiedenis
+        document.getElementById('historyList').innerHTML = trainings.slice().reverse().map(t => `
+            <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h4 style="margin-bottom:4px;">${t.km} km ${t.night ? '🌙' : ''}</h4>
+                    <small style="color: #718096;">${t.date.split('-').reverse().join('/')} • ${t.speed} km/u</small>
+                </div>
+                ${!isSupporter ? `<button onclick="delT(${t.id})" style="border:none; background:none; font-size:1.2rem; cursor:pointer; padding:5px;">🗑️</button>` : ''}
+            </div>
+        `).join('');
     }
 
     function renderSchedule() {
-        document.getElementById('mobileSchedule').innerHTML = SCHEDULE_DATA.map(p => `<div class="phase-header">${p.phase}</div>` + p.weeks.map(w => `<div class="schedule-week"><b>Week ${w.w}</b><br>${w.task}</div>`).join('')).join('');
+        document.getElementById('mobileSchedule').innerHTML = SCHEDULE_DATA.map(p => `
+            <div class="phase-header">${p.phase}</div>` + 
+            p.weeks.map(w => `<div class="schedule-week">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <b>Week ${w.w}</b> <span style="font-size:0.6rem; background:var(--primary); color:white; padding:2px 6px; border-radius:8px;">${w.note}</span>
+                </div>
+                <small style="color:#718096; display:block; margin-bottom:5px;">${w.d}</small>
+                ${w.task}
+            </div>`).join('')
+        ).join('');
     }
 
-    function renderChart() {
-        const ctx = document.getElementById('speedChart').getContext('2d');
-        if(chart) chart.destroy();
-        const last = trainings.slice(-7);
-        chart = new Chart(ctx, { type: 'line', data: { labels: last.map(t=>t.date.split('-')[2]), datasets: [{ label: 'km/u', data: last.map(t=>t.speed), borderColor: '#1a2a6c', tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false } });
+    function renderExercises() {
+        document.getElementById('exerciseList').innerHTML = EXERCISE_DATA.map(ex => `
+            <div class="schedule-week" style="border-left-color: var(--primary);">
+                <b>${ex.icon} ${ex.title}</b><br>
+                <small style="color: var(--primary); font-weight:bold;">${ex.reps}</small><br>
+                <span style="font-size:0.75rem; color:#4a5568;">${ex.desc}</span>
+            </div>
+        `).join('');
     }
 
     function switchTab(id, btn) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(id).classList.add('active'); btn.classList.add('active');
-        if(id === 'dash') renderChart();
+        document.getElementById(id).classList.add('active'); 
+        btn.classList.add('active');
     }
 
     function showWelcomeMessage() {
+        const text = ["Klaar voor je kilometers?", "Lekker bezig!", "Dodentocht modus: AAN"];
         const notif = document.getElementById('notif');
-        notif.innerText = "Welkom terug!"; notif.style.display = 'block';
-        setTimeout(() => { notif.style.display = 'none'; }, 3000);
+        notif.innerText = text[Math.floor(Math.random() * text.length)];
+        notif.style.display = 'block';
+        setTimeout(() => { notif.style.display = 'none'; }, 4000);
     }
 
     function updateCountdown() { const days = Math.floor((EVENT_DATE - new Date())/(1000*60*60*24)); document.getElementById('countdown').innerText = `⏰ Nog ${days} dagen tot Bornem`; }
-    function delT(id) { if(isSupporter) return; if(confirm('Wissen?')) { trainings = trainings.filter(x=>x.id!==id); saveData(); renderAll(); } }
-    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function clearAllData() { if(isSupporter) return; if(confirm('ALLES wissen?')) { localStorage.clear(); location.reload(); } }
-    function exportData() { const blob = new Blob([JSON.stringify(trainings)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='doto_backup.json'; a.click(); }
+    
+    function delT(id) { 
+        if(isSupporter) return; 
+        if(confirm('Deze training wissen?')) { 
+            trainings = trainings.filter(x=>x.id!==id); 
+            saveData(); 
+            renderAll(); 
+        } 
+    }
+    
+    function toggleTheme() { 
+        document.body.classList.toggle('dark-mode'); 
+        localStorage.setItem(THEME_KEY, document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    }
+    
+    function clearAllData() { 
+        if(isSupporter) return; 
+        if(confirm('⚠️ WAARSCHUWING: Dit wist al je trainingen en donaties. Zeker weten?')) { 
+            localStorage.removeItem(STORAGE_KEY); 
+            localStorage.removeItem(DONATIE_KEY);
+            location.reload(); 
+        } 
+    }
+    
+    function exportData() { 
+        const blob = new Blob([JSON.stringify({t: trainings, d: localStorage.getItem(DONATIE_KEY)})], {type:'application/json'}); 
+        const url = URL.createObjectURL(blob); 
+        const a = document.createElement('a'); 
+        a.href=url; 
+        a.download=`doto_backup_${new Date().toISOString().split('T')[0]}.json`; 
+        a.click(); 
+    }
 
     window.onload = init;
 </script>
