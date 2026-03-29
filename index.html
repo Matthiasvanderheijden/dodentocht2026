@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icon.jpg?v=1">
-    
+
     <style>
         :root {
             --primary: #1a2a6c; --secondary: #b21f1f; --accent: #f39c12;
@@ -159,48 +159,35 @@
     let trainings = [];
     let isSupporter = false;
 
-    // VOLLEDIG 33-WEKEN SCHEMA
+    // VOLLEDIG 20-WEKEN SCHEMA (30 mrt - 14 aug)
     const SCHEDULE_DATA = [
-        { phase: "FASE 1: BASIS & KNIE HERSTEL (JAN - FEB)", weeks: [
-            { w: "1", d: "29 dec - 4 jan", task: "Di: Rust • Do: 1 jan 5km Tempo • Zo: 12km Wandelen", note: "🎯 START" },
-            { w: "2", d: "5 - 11 jan", task: "Di: 20m Jog • Do: Kracht • Zo: 14km Wandelen", note: "" },
-            { w: "3", d: "12 - 18 jan", task: "Di: 20m Jog • Do: 6km Tempo • Zo: 16km Wandelen", note: "" },
-            { w: "4", d: "19 - 25 jan", task: "Di: Rust • Do: Kracht • Zo: 10km Herstel", note: "💤 HERSTEL" },
-            { w: "5", d: "26 jan - 1 feb", task: "Di: 25m Jog • Do: 7km Tempo • Zo: 18km Wandelen", note: "" },
-            { w: "6", d: "2 - 8 feb", task: "Di: 30m Jog • Do: Kracht • Zo: 20km Wandelen", note: "🎯 20KM" },
-            { w: "7", d: "9 - 15 feb", task: "Di: 30m Jog • Do: 8km Tempo • Zo: 22km Wandelen", note: "" },
-            { w: "8", d: "16 - 22 feb", task: "Di: Rust • Do: Kracht • Zo: 12km Herstel", note: "💤 HERSTEL" }
+        { phase: "FASE 1: De Basis leggen (Maart - April)", weeks: [
+            { w: "1", d: "30 mrt - 5 apr", task: "Di: 25 min Hardlopen • Wo: 6 km Snel • Za: 12 km", note: "START" },
+            { w: "2", d: "6 apr - 12 apr", task: "Di: 30 min Hardlopen • Wo: 7 km Snel • Za: 15 km", note: "" },
+            { w: "3", d: "13 apr - 19 apr", task: "Di: 30 min Hardlopen • Wo: 8 km Snel • Za: 20 km", note: "" },
+            { w: "4", d: "20 apr - 26 apr", task: "Di: Rust • Wo: 5 km Rustig • Za: 10 km", note: "💤 RUSTWEEK" }
         ]},
-        { phase: "FASE 2: AFSTAND OPBOUW (MRT - APR)", weeks: [
-            { w: "9", d: "23 feb - 1 mrt", task: "Di: 35m Jog • Do: 8km Tempo • Zo: 25km Wandelen", note: "" },
-            { w: "10", d: "2 - 8 mrt", task: "Di: 35m Jog • Do: Kracht • Zo: 15km Herstel", note: "" },
-            { w: "11", d: "9 - 15 mrt", task: "Di: 40m Jog • Do: 10km Tempo • Zo: 28km Wandelen", note: "" },
-            { w: "12", d: "16 - 22 mrt", task: "Di: Rust • Do: Kracht • Zo: 12km Herstel", note: "💤 HERSTEL" },
-            { w: "13", d: "23 - 29 mrt", task: "Di: 40m Jog • Do: 10km Tempo • Zo: 32km Wandelen", note: "🎯 30KM+" },
-            { w: "14", d: "30 mrt - 5 apr", task: "Di: 45m Jog • Do: Kracht • Zo: 20km Wandelen", note: "" },
-            { w: "15", d: "6 - 12 apr", task: "Di: 45m Jog • Do: 12km Tempo • Zo: 35km Wandelen", note: "" },
-            { w: "16", d: "13 - 19 apr", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" },
-            { w: "17", d: "20 - 26 apr", task: "Di: 45m Jog • Do: Kracht • Zo: 22km Wandelen", note: "" }
+        { phase: "FASE 2: Uithouding vergroten (Mei - Juni)", weeks: [
+            { w: "5", d: "27 apr - 3 mei", task: "Di: 35 min Hardlopen • Wo: 10 km Snel • Za: 22 km", note: "" },
+            { w: "6", d: "4 mei - 10 mei", task: "Di: 35 min Hardlopen • Wo: 10 km Snel • Za: 25 km", note: "" },
+            { w: "7", d: "11 mei - 17 mei", task: "Di: 40 min Hardlopen • Wo: 12 km Snel • Za: 28 km", note: "" },
+            { w: "8", d: "18 mei - 24 mei", task: "Di: Rust • Wo: 6 km Rustig • Za: 15 km", note: "💤 RUSTWEEK" },
+            { w: "9", d: "25 mei - 31 mei", task: "Di: 45 min Hardlopen • Wo: 12 km Snel • Za: 32 km", note: "" },
+            { w: "10", d: "1 jun - 7 jun", task: "Di: 45 min Hardlopen • Wo: 12 km Snel • Za: 35 km", note: "" }
         ]},
-        { phase: "FASE 3: PIEK VOLUME (MEI - JUN)", weeks: [
-            { w: "18", d: "27 apr - 3 mei", task: "Di: 45m Jog • Do: 14km Tempo • Zo: 25km Wandelen", note: "" },
-            { w: "19", d: "4 - 10 mei", task: "Di: 50m Jog • Do: 14km Tempo • Zo: 40km Wandelen", note: "🎯 40KM" },
-            { w: "20", d: "11 - 17 mei", task: "Di: 50m Jog • Do: Kracht • Zo: 20km Herstel", note: "" },
-            { w: "21", d: "18 - 24 mei", task: "Di: Interval • Do: 14km Tempo • Zo: 42km Wandelen", note: "🎯 MARATHON" },
-            { w: "22", d: "25 - 31 mei", task: "Di: Rust • Do: Kracht • Zo: 15km Herstel", note: "💤 HERSTEL" },
-            { w: "23", d: "1 - 7 juni", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 50km Wandelen", note: "🎯 50KM" },
-            { w: "24", d: "8 - 14 juni", task: "Di: 60m Jog • Do: 14km Tempo • Zo: 35km Wandelen", note: "" },
-            { w: "25", d: "15 - 21 juni", task: "Di: Interval • Do: 10km Los • Zo: 25km Wandelen", note: "" },
-            { w: "26", d: "22 - 28 juni", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km NACHT", note: "🌙 NACHT" }
+        { phase: "FASE 3: De Specifieke Voorbereiding (Juni - Juli)", weeks: [
+            { w: "11", d: "8 jun - 14 jun", task: "Di: 50 min Hardlopen • Wo: 15 km Snel • Za: 15 km (Tempo!)", note: "" },
+            { w: "12", d: "15 jun - 21 jun", task: "Di: Rust • Wo: 8 km Rustig • Za: 18 km", note: "💤 RUSTWEEK" },
+            { w: "13", d: "22 jun - 28 jun", task: "Di: 50 min Hardlopen • Wo: 15 km Snel • Za: 40 km", note: "🎯 40KM" },
+            { w: "14", d: "29 jun - 5 jul", task: "Di: 45 min Hardlopen • Wo: 10 km Snel • Za: 25 km", note: "" },
+            { w: "15", d: "6 jul - 12 jul", task: "Di: 40 min Hardlopen • Wo: 10 km Snel • Za: 30 km • Zo: 15 km", note: "BACK-TO-BACK" },
+            { w: "16", d: "13 jul - 19 jul", task: "Di: 30 min Hardlopen • Wo: 10 km Snel • Za: 50 km ('s avonds)", note: "DE GENERALE" }
         ]},
-        { phase: "FASE 4: FINALE & TAPER (JUL - AUG)", weeks: [
-            { w: "27", d: "29 jun - 5 jul", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 40km Wandelen", note: "" },
-            { w: "28", d: "6 - 12 juli", task: "Di: Interval • Do: Kracht • Zo: 20km Herstel", note: "💤 HERSTEL" },
-            { w: "29", d: "13 - 19 juli", task: "Di: 60m Jog • Do: 15km Tempo • Zo: 60km TEST", note: "🔥 60KM" },
-            { w: "30", d: "20 - 26 juli", task: "Di: 45m Jog • Do: 10km Los • Zo: 30km Wandelen", note: "" },
-            { w: "31", d: "27 jul - 2 aug", task: "Di: 30m Jog • Do: 8km Los • Zo: 20km Wandelen", note: "📉 TAPER" },
-            { w: "32", d: "3 - 9 aug", task: "Di: 20m Jog • Do: Kracht • Zo: 12km Los", note: "📉 TAPER" },
-            { w: "33", d: "10 - 14 aug", task: "Di: Rust • Do: 5km Los • Vr: 14 AUG: 100KM!", note: "🏆 D-DAY" }
+        { phase: "FASE 4: Tapering & Wedstrijd (Juli - Augustus)", weeks: [
+            { w: "17", d: "20 jul - 26 jul", task: "Di: Rust • Wo: 6 km Rustig • Za: 15 km", note: "💤 RUSTWEEK" },
+            { w: "18", d: "27 jul - 2 aug", task: "Di: 20 min Hardlopen • Wo: 5 km Rustig • Za: 10 km", note: "📉 TAPER" },
+            { w: "19", d: "3 aug - 9 aug", task: "Di: Rust • Wo: Rust • Za: 5 km (Losmaken)", note: "📉 TAPER" },
+            { w: "20", d: "10 aug - 14 aug", task: "Di: 15 min Wandelen • Wo: Rust • Do: Rust • Vr: 100KM!", note: "🏆 D-DAY" }
         ]}
     ];
 
@@ -389,7 +376,7 @@
             <div class="phase-header">${p.phase}</div>` + 
             p.weeks.map(w => `<div class="schedule-week">
                 <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <b>Week ${w.w}</b> <span style="font-size:0.6rem; background:var(--primary); color:white; padding:2px 6px; border-radius:8px;">${w.note}</span>
+                    <b>Week ${w.w}</b> ${w.note ? `<span style="font-size:0.6rem; background:var(--primary); color:white; padding:2px 6px; border-radius:8px;">${w.note}</span>` : ''}
                 </div>
                 <small style="color:#718096; display:block; margin-bottom:5px;">${w.d}</small>
                 ${w.task}
