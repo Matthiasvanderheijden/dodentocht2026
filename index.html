@@ -1,449 +1,597 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Doto 2026 - Berrefonds Editie</title>
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icon.jpg?v=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dodentocht 2026</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
-    <style>
-        :root {
-            --primary: #1a2a6c; --secondary: #b21f1f; --accent: #f39c12;
-            --bg: #f0f2f5; --card-bg: #ffffff; --text: #1a202c;
-            --safe-bottom: env(safe-area-inset-bottom);
-        }
-        body.dark-mode { --bg: #121212; --card-bg: #1e1e1e; --text: #e8e8e8; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); color: var(--text); padding-bottom: calc(80px + var(--safe-bottom)); transition: background-color 0.3s; }
-        
-        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 25px 20px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .header h1 { font-size: 1.4rem; letter-spacing: -1px; margin-bottom: 8px; text-transform: uppercase; }
-        .countdown { font-size: 0.85rem; font-weight: bold; opacity: 0.9; }
-        .container { padding: 15px; }
-        .card { background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .card h2 { font-size: 1.1rem; margin-bottom: 15px; border-left: 4px solid var(--accent); padding-left: 10px; }
+  <style>
+    :root {
+      --primary: #1a2a6c;
+      --bg: #f0f2f5;
+      --card: #ffffff;
+      --text: #1a202c;
+      --text-muted: #718096;
+      --border: rgba(0,0,0,0.08);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
 
-        .progress-container { height: 28px; background: #e2e8f0; border-radius: 14px; overflow: hidden; margin: 10px 0; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #48bb78, #38a169); width: 0%; transition: width 1s; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; }
-        
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: var(--card-bg); padding: 15px; border-radius: 18px; text-align: center; border-bottom: 3px solid var(--primary); transition: background-color 0.3s; }
-        .stat-value { font-size: 1.3rem; font-weight: 800; display: block; margin-top: 5px; }
-        .stat-label { font-size: 0.65rem; text-transform: uppercase; color: #718096; font-weight: bold; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; padding: 10px 0 calc(10px + var(--safe-bottom)); box-shadow: 0 -2px 15px rgba(0,0,0,0.1); z-index: 1000; transition: background-color 0.3s; }
-        .nav-item { flex: 1; border: none; background: none; color: #718096; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: color 0.3s; }
-        .nav-item.active { color: var(--primary); font-weight: bold; }
-        .nav-icon { font-size: 1.5rem; margin-bottom: 2px; }
+    body {
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: calc(72px + var(--safe-bottom));
+    }
 
-        .celebration-particle { position: absolute; width: 10px; height: 10px; border-radius: 50%; opacity: 0; animation: celebrate-up 4s forwards ease-out; pointer-events: none; z-index: 9999; }
-        @keyframes celebrate-up { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.5); } }
-        
-        .balloon { position: absolute; width: 30px; height: 40px; border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%; opacity: 0.9; z-index: 9998; animation: fly-up 7s linear forwards; }
-        .balloon::after { content: "↓"; position: absolute; bottom: -15px; left: 12px; font-size: 15px; color: rgba(0,0,0,0.1); }
-        @keyframes fly-up { 0% { transform: translateY(100vh); opacity: 1; } 100% { transform: translateY(-20vh); opacity: 0; } }
+    /* HEADER */
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 20px 16px 18px;
+      border-radius: 0 0 20px 20px;
+      margin-bottom: 16px;
+    }
+    .header h1 { font-size: 18px; font-weight: 600; margin-bottom: 3px; }
+    .header .sub { font-size: 13px; opacity: 0.7; }
 
-        .notification { position: fixed; top: 15px; left: 15px; right: 15px; background: var(--accent); color: white; padding: 15px; border-radius: 15px; z-index: 2000; display: none; text-align: center; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .btn-main { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: transform 0.2s; }
-        .btn-main:active { transform: scale(0.98); }
-        .schedule-week { background: var(--card-bg); padding: 12px; border-radius: 12px; margin-bottom: 8px; border-left: 4px solid var(--accent); font-size: 0.85rem; transition: background-color 0.3s; }
-        .phase-header { background: var(--primary); color: white; padding: 8px 12px; border-radius: 8px; font-size: 0.75rem; margin: 15px 0 8px; font-weight: bold; }
-        
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+    /* TABS */
+    .tabs {
+      display: flex;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 8px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px 4px 8px;
+      font-size: 11px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-family: inherit;
+      transition: color 0.2s;
+    }
+    .tab i { font-size: 20px; }
+    .tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 500; }
+
+    /* SECTIONS */
+    .section { display: none; padding: 16px; }
+    .section.active { display: block; }
+
+    /* CARDS */
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .card-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    /* STATS */
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .stat {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 12px 8px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .stat-val { font-size: 20px; font-weight: 600; color: var(--text); }
+    .stat-lbl { font-size: 10px; color: var(--text-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.4px; }
+
+    /* PROGRESS */
+    .progress-wrap { background: #edf2f7; border-radius: 6px; height: 10px; overflow: hidden; margin: 8px 0; }
+    .progress-fill { height: 100%; background: var(--primary); border-radius: 6px; transition: width 0.8s ease; }
+    .prog-text { font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; }
+
+    /* FORM */
+    input, select {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 15px;
+      background: var(--card);
+      color: var(--text);
+      margin-bottom: 10px;
+      font-family: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--primary); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* BUTTONS */
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+    .btn:active { opacity: 0.85; }
+    .btn.secondary {
+      background: #edf2f7;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .btn.danger { background: #e53e3e; }
+
+    /* HISTORY */
+    .training-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .training-item:last-child { border-bottom: none; }
+    .ti-main { font-size: 15px; font-weight: 500; }
+    .ti-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .del-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--text-muted); padding: 4px 8px; }
+
+    /* ALERTS */
+    .alert { padding: 12px 14px; border-radius: 12px; margin-bottom: 10px; font-size: 13px; }
+    .alert.warning { background: #fff5f5; border: 1px solid #fed7d7; color: #c53030; }
+    .alert.info { background: #f0f4ff; border: 1px solid #c3d0f0; color: #2d4090; }
+
+    /* SCHEMA */
+    .phase-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin: 14px 0 8px;
+      display: inline-block;
+    }
+    .phase-opbouw { background: #185FA5; }
+    .phase-piek   { background: #3B6D11; }
+    .phase-afbouw { background: #BA7517; }
+    .phase-race   { background: #8b2020; }
+
+    .week-card-schema {
+      background: var(--card);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .week-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .week-head-left { display: flex; align-items: center; gap: 8px; }
+    .week-title { font-size: 14px; font-weight: 600; }
+    .week-tag {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .tag-opbouw { background: #dbeafe; color: #1e4fa5; }
+    .tag-piek   { background: #dcfce7; color: #166534; }
+    .tag-afbouw { background: #fef3c7; color: #92400e; }
+    .tag-race   { background: #fee2e2; color: #991b1b; }
+    .week-meta { text-align: right; }
+    .week-dates { font-size: 11px; color: var(--text-muted); }
+    .week-total { font-size: 13px; font-weight: 600; color: var(--text); }
+
+    .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+    .day-col { padding: 8px 3px; text-align: center; border-right: 1px solid #f0f0f0; }
+    .day-col:last-child { border-right: none; }
+    .day-col.weekend { background: #fafaf8; }
+    .day-col.raceday { background: #fff0f0; }
+    .day-name { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+    .day-km { font-size: 11px; font-weight: 600; line-height: 1.2; }
+    .day-note-small { font-size: 8px; color: var(--text-muted); margin-top: 2px; line-height: 1.3; }
+
+    .km-rest   { color: #c0c0c0; }
+    .km-short  { color: #185FA5; }
+    .km-medium { color: #BA7517; }
+    .km-long   { color: #3B6D11; }
+    .km-race   { color: #8b2020; font-size: 13px !important; }
+
+    /* OEFENINGEN */
+    .ex-item {
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+    .ex-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .ex-reps { font-size: 12px; color: var(--primary); font-weight: 500; margin-bottom: 4px; }
+    .ex-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card);
+      display: flex;
+      padding: 8px 0 calc(8px + var(--safe-bottom));
+      box-shadow: 0 -1px 0 var(--border);
+      z-index: 1000;
+    }
+    .nav-item {
+      flex: 1;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      font-size: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.2s;
+    }
+    .nav-item i { font-size: 22px; }
+    .nav-item.active { color: var(--primary); font-weight: 500; }
+  </style>
 </head>
 <body>
 
-<div id="notif" class="notification"></div>
-<div id="celebrationContainer" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></div>
-
 <div class="header">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-        <div>
-            <h1 id="mainTitle">🎯 DOTO 2026</h1>
-            <div id="countdown" class="countdown">Laden...</div>
-        </div>
-        <button onclick="toggleTheme()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">🌓</button>
-    </div>
+  <h1>Dodentocht 2026</h1>
+  <div class="sub" id="countdown">Laden...</div>
 </div>
 
-<div class="container">
-    <div id="dash" class="tab-content active">
-        <div style="background: linear-gradient(135deg, #fff5f5, #ffffff); border: 1px solid #feb2b2; padding: 15px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <h3 style="font-size: 0.9rem; color: #e53e3e; margin-bottom: 8px;">✨ Wandelen voor het Berrefonds</h3>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <span style="font-size: 0.7rem; color: #718096; font-weight: bold;">INGEZAMELD:</span>
-                    <div id="donatieBedrag" style="font-size: 1.4rem; font-weight: 800; color: #e53e3e;">€ 0</div>
-                </div>
-                <button id="editDonatieBtn" onclick="updateDonatie()" style="background: #fed7d7; border: none; border-radius: 8px; padding: 6px 12px; font-size: 0.7rem; color: #9b2c2c; cursor: pointer; font-weight: bold;">BEWERK</button>
-            </div>
-            <button id="shareLinkBtn" class="btn-main" style="background: var(--accent); margin-top: 12px; font-size: 0.75rem;" onclick="generateSupporterLink()">🔗 KOPIËER SUPPORTER LINK</button>
-        </div>
+<div id="dash" class="section active">
+  <div class="card">
+    <div class="card-label">Jaardoel — 800 km</div>
+    <div class="progress-wrap"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="prog-text"><span id="progPct">0%</span><span id="progRem">800 km te gaan</span></div>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-val" id="sTot">0</div><div class="stat-lbl">Totaal km</div></div>
+    <div class="stat"><div class="stat-val" id="sSess">0</div><div class="stat-lbl">Sessies</div></div>
+    <div class="stat"><div class="stat-val" id="sSpeed">–</div><div class="stat-lbl">Gem. km/u</div></div>
+  </div>
+  <div id="alerts"></div>
+</div>
 
-        <div id="dashboardAlerts"></div>
-
-        <div class="card">
-            <h2>🎯 Jaardoel: 800km</h2>
-            <div class="progress-container"><div id="progressBar" class="progress-bar">0%</div></div>
-            <p id="progText" style="text-align: center; font-size: 0.75rem; color: #718096; margin-top: 5px;"></p>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-box"><span class="stat-label">Totaal KM</span><span id="totalKm" class="stat-value">0</span></div>
-            <div class="stat-box"><span class="stat-label">Snelheid</span><span id="avgSpeed" class="stat-value">0</span></div>
-            <div class="stat-box"><span class="stat-label">Sessies</span><span id="totalSess" class="stat-value">0</span></div>
-            <div class="stat-box"><span class="stat-label">Knie Score</span><span id="kneeAvg" class="stat-value">0</span></div>
-        </div>
+<div id="log" class="section">
+  <div class="card">
+    <div class="card-label">Training loggen</div>
+    <input type="date" id="tDate">
+    <div class="row">
+      <input type="number" id="tKm" step="0.1" placeholder="Afstand (km)">
+      <input type="number" id="tMin" placeholder="Tijd (min)">
     </div>
+    <select id="tKnee">
+      <option value="0">Kniepijn: geen</option>
+      <option value="1">1 – nauwelijks</option>
+      <option value="2">2</option>
+      <option value="3">3 – licht</option>
+      <option value="4">4</option>
+      <option value="5">5 – matig</option>
+      <option value="6">6</option>
+      <option value="7">7 – sterk</option>
+      <option value="8">8</option>
+      <option value="9">9 – heel erg</option>
+      <option value="10">10 – onmogelijk</option>
+    </select>
+    <button class="btn" onclick="saveT()">Opslaan</button>
+  </div>
+  <div class="card">
+    <div class="card-label">Geschiedenis</div>
+    <div id="hist"></div>
+  </div>
+</div>
 
-    <div id="log" class="tab-content">
-        <div class="card">
-            <h2>📝 Training Loggen</h2>
-            <input type="date" id="tDate" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd; background:var(--card-bg); color:var(--text);">
-            <div style="display: flex; gap: 10px; margin-bottom:10px;">
-                <input type="number" id="tKm" step="0.1" placeholder="KM" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:var(--card-bg); color:var(--text);">
-                <input type="number" id="tMin" placeholder="Minuten" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:var(--card-bg); color:var(--text);">
-            </div>
-            <div style="display: flex; gap: 10px; margin-bottom:10px;">
-                <select id="tKnee" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:var(--card-bg); color:var(--text);"><option value="0">Knie Pijn (0-10)</option><script>for(let i=1;i<=10;i++)document.write(`<option value="${i}">${i}</option>`)</script></select>
-                <select id="tNight" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:var(--card-bg); color:var(--text);"><option value="false">Dag</option><option value="true">Nacht 🌙</option></select>
-            </div>
-            <button class="btn-main" onclick="saveTraining()">💾 TRAINING OPSLAAN</button>
-        </div>
-        <div id="historyList"></div>
-    </div>
+<div id="schema" class="section">
+  <div id="schemaList"></div>
+</div>
 
-    <div id="sch" class="tab-content">
-        <div class="card"><h2>📅 Trainingsplan</h2><div id="mobileSchedule"></div></div>
-    </div>
+<div id="oefen" class="section">
+  <div class="card">
+    <div class="card-label" style="margin-bottom:12px;">Knie & spierversterkende oefeningen — 2x per week</div>
+    <div id="oefenList"></div>
+  </div>
+</div>
 
-    <div id="exercises" class="tab-content">
-        <div class="card">
-            <h2>💪 Knie & Spierversterking</h2>
-            <p style="font-size: 0.8rem; color: #718096; margin-bottom: 15px;">Doe deze oefeningen 2x per week op je 'Kracht' dagen voor een blessurevrije Dodentocht.</p>
-            <div id="exerciseList"></div>
-        </div>
-    </div>
-
-    <div id="lead" class="tab-content">
-        <div class="card" id="beheerCard">
-            <h2>⚙️ Beheer & Backup</h2>
-            <p style="font-size: 0.8rem; color: #718096; margin-bottom: 15px;">Maak af en toe een backup van je data voor de zekerheid.</p>
-            <button class="btn-main" style="background:#718096;" onclick="exportData()">📥 DOWNLOAD BACKUP</button>
-            <button class="btn-main" style="background:#e53e3e;" onclick="clearAllData()">🗑️ ALLES WISSEN</button>
-        </div>
-    </div>
+<div id="beheer" class="section">
+  <div class="card">
+    <div class="card-label">Backup & data</div>
+    <button class="btn secondary" onclick="exportD()"><i class="ti ti-download"></i> Backup downloaden</button>
+    <button class="btn danger" onclick="clearD()"><i class="ti ti-trash"></i> Alle data wissen</button>
+  </div>
 </div>
 
 <nav class="bottom-nav">
-    <button class="nav-item active" onclick="switchTab('dash', this)"><span class="nav-icon">📊</span>Stats</button>
-    <button class="nav-item" id="navLog" onclick="switchTab('log', this)"><span class="nav-icon">📝</span>Log</button>
-    <button class="nav-item" onclick="switchTab('sch', this)"><span class="nav-icon">📅</span>Plan</button>
-    <button class="nav-item" onclick="switchTab('exercises', this)"><span class="nav-icon">💪</span>Oefen</button>
-    <button class="nav-item" id="navLead" onclick="switchTab('lead', this)"><span class="nav-icon">⚙️</span>Beheer</button>
+  <button class="nav-item active" onclick="show('dash', this)"><i class="ti ti-chart-bar"></i>Stats</button>
+  <button class="nav-item" onclick="show('log', this)"><i class="ti ti-plus"></i>Log</button>
+  <button class="nav-item" onclick="show('schema', this)"><i class="ti ti-calendar"></i>Plan</button>
+  <button class="nav-item" onclick="show('oefen', this)"><i class="ti ti-run"></i>Oefeningen</button>
+  <button class="nav-item" onclick="show('beheer', this)"><i class="ti ti-settings"></i>Beheer</button>
 </nav>
 
 <script>
-    const STORAGE_KEY = 'dodentocht_v10_ultimate';
-    const DONATIE_KEY = 'doto_donatie_val';
-    const THEME_KEY = 'dodentocht_v10_theme';
-    const EVENT_DATE = new Date('2026-08-14');
-    const TARGET_KM = 800;
+  const KEY = 'doto2026';
+  const TARGET = 800;
+  const EVENT = new Date('2026-08-14');
 
-    let trainings = [];
-    let isSupporter = false;
+  const SCHEMA = [
+    { fase: "Opbouw", faseTag: "opbouw", weken: [
+      { w: 1, d: "8–14 jun", tot: "52 km", dagen: [
+        { n:"Ma", km:"10 km", note:"rustig starten", cls:"km-short" },
+        { n:"Di", km:"–",    note:"rust",            cls:"km-rest"  },
+        { n:"Wo", km:"12 km", note:"~2u",             cls:"km-short" },
+        { n:"Do", km:"–",    note:"rust",            cls:"km-rest"  },
+        { n:"Vr", km:"–",    note:"rust",            cls:"km-rest"  },
+        { n:"Za", km:"20 km", note:"lange tocht",     cls:"km-long", w:true },
+        { n:"Zo", km:"10 km", note:"herstel",         cls:"km-medium", w:true }
+      ]},
+      { w: 2, d: "15–21 jun", tot: "61 km", dagen: [
+        { n:"Ma", km:"–",    note:"rust",        cls:"km-rest"  },
+        { n:"Di", km:"12 km", note:"~2u",         cls:"km-short" },
+        { n:"Wo", km:"–",    note:"rust",        cls:"km-rest"  },
+        { n:"Do", km:"12 km", note:"~2u",         cls:"km-short" },
+        { n:"Vr", km:"–",    note:"rust",        cls:"km-rest"  },
+        { n:"Za", km:"25 km", note:"lange tocht", cls:"km-long", w:true },
+        { n:"Zo", km:"12 km", note:"herstel",     cls:"km-medium", w:true }
+      ]},
+      { w: 3, d: "22–28 jun", tot: "58 km", dagen: [
+        { n:"Ma", km:"–",    note:"rust",        cls:"km-rest"  },
+        { n:"Di", km:"14 km", note:"~2u30",       cls:"km-short" },
+        { n:"Wo", km:"–",    note:"rust",        cls:"km-rest"  },
+        { n:"Do", km:"14 km", note:"~2u30",       cls:"km-short" },
+        { n:"Vr", km:"–",    note:"rust",        cls:"km-rest"  },
+        { n:"Za", km:"30 km", note:"lange tocht", cls:"km-long", w:true },
+        { n:"Zo", km:"–",    note:"volledig rust", cls:"km-rest", w:true }
+      ]},
+      { w: 4, d: "29 jun–5 jul", tot: "76 km", dagen: [
+        { n:"Ma", km:"–",    note:"rust",          cls:"km-rest"  },
+        { n:"Di", km:"14 km", note:"~2u30",         cls:"km-short" },
+        { n:"Wo", km:"–",    note:"rust",          cls:"km-rest"  },
+        { n:"Do", km:"15 km", note:"~3u",           cls:"km-short" },
+        { n:"Vr", km:"–",    note:"rust",          cls:"km-rest"  },
+        { n:"Za", km:"35 km", note:"lange tocht",   cls:"km-long", w:true },
+        { n:"Zo", km:"12 km", note:"actief herstel", cls:"km-medium", w:true }
+      ]},
+      { w: 5, d: "6–12 jul", tot: "70 km", dagen: [
+        { n:"Ma", km:"–",    note:"rust",        cls:"km-rest"  },
+        { n:"Di", km:"15 km", note:"~3u",         cls:"km-short" },
+        { n:"Wo", km:"–",    note:"rust",        cls:"km-rest"  },
+        { n:"Do", km:"15 km", note:"~3u",         cls:"km-short" },
+        { n:"Vr", km:"–",    note:"rust",        cls:"km-rest"  },
+        { n:"Za", km:"40 km", note:"lange tocht", cls:"km-long", w:true },
+        { n:"Zo", km:"–",    note:"volledig rust", cls:"km-rest", w:true }
+      ]}
+    ]},
+    { fase: "Piek", faseTag: "piek", weken: [
+      { w: 6, d: "13–19 jul", tot: "75 km", dagen: [
+        { n:"Ma", km:"–",    note:"rust",             cls:"km-rest"  },
+        { n:"Di", km:"15 km", note:"~3u",              cls:"km-short" },
+        { n:"Wo", km:"–",    note:"rust",             cls:"km-rest"  },
+        { n:"Do", km:"15 km", note:"nachttraining!",   cls:"km-short" },
+        { n:"Vr", km:"–",    note:"rust",             cls:"km-rest"  },
+        { n:"Za", km:"45 km", note:"lange tocht!",     cls:"km-long", w:true },
+        { n:"Zo", km:"–",    note:"volledig rust",    cls:"km-rest", w:true }
+      ]},
+      { w: 7, d: "20–26 jul", tot: "79 km", dagen: [
+        { n:"Ma", km:"–",    note:"rust",              cls:"km-rest"  },
+        { n:"Di", km:"14 km", note:"~2u30",             cls:"km-short" },
+        { n:"Wo", km:"–",    note:"rust",              cls:"km-rest"  },
+        { n:"Do", km:"15 km", note:"nachttraining!",    cls:"km-short" },
+        { n:"Vr", km:"–",    note:"rust",              cls:"km-rest"  },
+        { n:"Za", km:"50 km", note:"halve Dodentocht!", cls:"km-long", w:true },
+        { n:"Zo", km:"–",    note:"volledig rust",     cls:"km-rest", w:true }
+      ]}
+    ]},
+    { fase: "Afbouw", faseTag: "afbouw", weken: [
+      { w: 8, d: "27 jul–2 aug", tot: "58 km", dagen: [
+        { n:"Ma", km:"–",    note:"rust",         cls:"km-rest"  },
+        { n:"Di", km:"14 km", note:"~2u30",        cls:"km-short" },
+        { n:"Wo", km:"–",    note:"rust",         cls:"km-rest"  },
+        { n:"Do", km:"12 km", note:"~2u",          cls:"km-short" },
+        { n:"Vr", km:"–",    note:"rust",         cls:"km-rest"  },
+        { n:"Za", km:"32 km", note:"afbouw tocht", cls:"km-long", w:true },
+        { n:"Zo", km:"–",    note:"volledig rust", cls:"km-rest", w:true }
+      ]},
+      { w: 9, d: "3–9 aug", tot: "30 km", dagen: [
+        { n:"Ma", km:"–",    note:"rust",        cls:"km-rest"   },
+        { n:"Di", km:"12 km", note:"rustig",      cls:"km-short"  },
+        { n:"Wo", km:"–",    note:"rust",        cls:"km-rest"   },
+        { n:"Do", km:"8 km",  note:"rustig",      cls:"km-short"  },
+        { n:"Vr", km:"–",    note:"rust",        cls:"km-rest"   },
+        { n:"Za", km:"10 km", note:"losse benen", cls:"km-medium", w:true },
+        { n:"Zo", km:"–",    note:"rust",        cls:"km-rest",   w:true }
+      ]}
+    ]},
+    { fase: "Race week", faseTag: "race", weken: [
+      { w: "Race", d: "10–14 aug", tot: "100 km", dagen: [
+        { n:"Ma", km:"8 km",   note:"rustig",          cls:"km-medium" },
+        { n:"Di", km:"–",      note:"rust",            cls:"km-rest"   },
+        { n:"Wo", km:"5 km",   note:"losse benen",     cls:"km-short"  },
+        { n:"Do", km:"–",      note:"rust",            cls:"km-rest"   },
+        { n:"Vr", km:"100 km", note:"DODENTOCHT",      cls:"km-race",  race:true },
+        { n:"Za", km:"–",      note:"recuperatie",     cls:"km-rest",  w:true },
+        { n:"Zo", km:"–",      note:"recuperatie",     cls:"km-rest",  w:true }
+      ]}
+    ]}
+  ];
 
-    // VOLLEDIG 20-WEKEN SCHEMA (30 mrt - 14 aug)
-    const SCHEDULE_DATA = [
-        { phase: "FASE 1: De Basis leggen (Maart - April)", weeks: [
-            { w: "1", d: "30 mrt - 5 apr", task: "Di: 25 min Hardlopen • Wo: 6 km Snel • Za: 12 km", note: "START" },
-            { w: "2", d: "6 apr - 12 apr", task: "Di: 30 min Hardlopen • Wo: 7 km Snel • Za: 15 km", note: "" },
-            { w: "3", d: "13 apr - 19 apr", task: "Di: 30 min Hardlopen • Wo: 8 km Snel • Za: 20 km", note: "" },
-            { w: "4", d: "20 apr - 26 apr", task: "Di: Rust • Wo: 5 km Rustig • Za: 10 km", note: "💤 RUSTWEEK" }
-        ]},
-        { phase: "FASE 2: Uithouding vergroten (Mei - Juni)", weeks: [
-            { w: "5", d: "27 apr - 3 mei", task: "Di: 35 min Hardlopen • Wo: 10 km Snel • Za: 22 km", note: "" },
-            { w: "6", d: "4 mei - 10 mei", task: "Di: 35 min Hardlopen • Wo: 10 km Snel • Za: 25 km", note: "" },
-            { w: "7", d: "11 mei - 17 mei", task: "Di: 40 min Hardlopen • Wo: 12 km Snel • Za: 28 km", note: "" },
-            { w: "8", d: "18 mei - 24 mei", task: "Di: Rust • Wo: 6 km Rustig • Za: 15 km", note: "💤 RUSTWEEK" },
-            { w: "9", d: "25 mei - 31 mei", task: "Di: 45 min Hardlopen • Wo: 12 km Snel • Za: 32 km", note: "" },
-            { w: "10", d: "1 jun - 7 jun", task: "Di: 45 min Hardlopen • Wo: 12 km Snel • Za: 35 km", note: "" }
-        ]},
-        { phase: "FASE 3: De Specifieke Voorbereiding (Juni - Juli)", weeks: [
-            { w: "11", d: "8 jun - 14 jun", task: "Di: 50 min Hardlopen • Wo: 15 km Snel • Za: 15 km (Tempo!)", note: "" },
-            { w: "12", d: "15 jun - 21 jun", task: "Di: Rust • Wo: 8 km Rustig • Za: 18 km", note: "💤 RUSTWEEK" },
-            { w: "13", d: "22 jun - 28 jun", task: "Di: 50 min Hardlopen • Wo: 15 km Snel • Za: 40 km", note: "🎯 40KM" },
-            { w: "14", d: "29 jun - 5 jul", task: "Di: 45 min Hardlopen • Wo: 10 km Snel • Za: 25 km", note: "" },
-            { w: "15", d: "6 jul - 12 jul", task: "Di: 40 min Hardlopen • Wo: 10 km Snel • Za: 30 km • Zo: 15 km", note: "BACK-TO-BACK" },
-            { w: "16", d: "13 jul - 19 jul", task: "Di: 30 min Hardlopen • Wo: 10 km Snel • Za: 50 km ('s avonds)", note: "DE GENERALE" }
-        ]},
-        { phase: "FASE 4: Tapering & Wedstrijd (Juli - Augustus)", weeks: [
-            { w: "17", d: "20 jul - 26 jul", task: "Di: Rust • Wo: 6 km Rustig • Za: 15 km", note: "💤 RUSTWEEK" },
-            { w: "18", d: "27 jul - 2 aug", task: "Di: 20 min Hardlopen • Wo: 5 km Rustig • Za: 10 km", note: "📉 TAPER" },
-            { w: "19", d: "3 aug - 9 aug", task: "Di: Rust • Wo: Rust • Za: 5 km (Losmaken)", note: "📉 TAPER" },
-            { w: "20", d: "10 aug - 14 aug", task: "Di: 15 min Wandelen • Wo: Rust • Do: Rust • Vr: 100KM!", note: "🏆 D-DAY" }
-        ]}
-    ];
+  const OEFENINGEN = [
+    { n:"Wall sit",        r:"3 × 45 sec",       d:"Rug tegen muur, knieën 90°. Sleutel voor kniestabiliteit." },
+    { n:"Lunges",          r:"3 × 12 per been",  d:"Grote stap vooruit, knie zakt. Versterkt billen en balans." },
+    { n:"Calf raises",     r:"3 × 15",           d:"Op tenen staan en rustig zakken. Voorkomt shin splints." },
+    { n:"Glute bridges",   r:"3 × 20",           d:"Liggend op rug, heupen omhoog. Goed voor onderrug en hamstrings." },
+    { n:"Eenbeensbalans",  r:"2 × 60 sec",       d:"Sta op één been. Versterkt enkels voor onverharde paden." },
+    { n:"Plank",           r:"3 × 45 sec",       d:"Lichaam recht als plank. Onmisbaar voor core-stabiliteit." },
+    { n:"Squats",          r:"3 × 15",           d:"Zak door heupen alsof je op een stoel gaat zitten. Dé basisoefening." }
+  ];
 
-    // OEFENINGEN DATA
-    const EXERCISE_DATA = [
-        { title: "Wall Sit", reps: "3 x 45 sec", desc: "Met rug tegen muur, knieën 90 graden. Cruciaal voor kniestabiliteit.", icon: "🧘" },
-        { title: "Lunges", reps: "3 x 12 per been", desc: "Grote stap vooruit, zak door je knie. Versterkt billen en balans.", icon: "👣" },
-        { title: "Calf Raises", reps: "3 x 15", desc: "Op je tenen staan en rustig zakken. Voorkomt shin splints.", icon: "🆙" },
-        { title: "Glute Bridges", reps: "3 x 20", desc: "Liggend op rug, heupen omhoog duwen. Goed voor onderrug/hamstrings.", icon: "🏠" },
-        { title: "Single Leg Balance", reps: "2 x 60 sec", desc: "Sta op één been. Versterkt enkels voor onverharde paden.", icon: "⚖️" },
-        { title: "Plank", reps: "3 x 45 sec", desc: "Hou je lichaam recht als een plank. Onmisbaar voor je core-stabiliteit.", icon: "🧱" },
-        { title: "Squats", reps: "3 x 15", desc: "Zak door je heupen alsof je op een stoel gaat zitten. Dé basisoefening.", icon: "🏋️" }
-    ];
+  let trainings = JSON.parse(localStorage.getItem(KEY)) || [];
 
-    function init() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const viewData = urlParams.get('view');
+  function save() { localStorage.setItem(KEY, JSON.stringify(trainings)); }
 
-        if (viewData) {
-            isSupporter = true;
-            try {
-                const decoded = JSON.parse(decodeURIComponent(escape(atob(viewData))));
-                trainings = decoded.t;
-                localStorage.setItem(DONATIE_KEY, decoded.d);
-                
-                document.getElementById('mainTitle').innerText = "👀 SUPPORTER VIEW";
-                
-                const editBtn = document.getElementById('editDonatieBtn');
-                if (editBtn) editBtn.style.display = 'none';
-                
-                const shareBtn = document.getElementById('shareLinkBtn');
-                if (shareBtn) shareBtn.style.display = 'none';
-                
-                const navLog = document.getElementById('navLog');
-                if (navLog) navLog.style.display = 'none';
-                
-                const navLead = document.getElementById('navLead');
-                if (navLead) navLead.style.display = 'none';
-                
-                const beheerCard = document.getElementById('beheerCard');
-                if (beheerCard) beheerCard.innerHTML = "<h2>Supporter Modus</h2><p>Je bekijkt de app in alleen-lezen modus.</p>";
-                
-                document.body.style.borderTop = "8px solid var(--accent)";
-            } catch(e) { 
-                alert("De supporter-link is ongeldig. Jouw eigen data wordt geladen."); 
-                isSupporter = false;
-                loadData(); 
-            }
-        } else {
-            loadData();
-            loadTheme();
-        }
+  function show(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
 
-        document.getElementById('tDate').valueAsDate = new Date();
-        renderAll();
-        renderSchedule();
-        renderExercises();
-        showWelcomeMessage();
-        updateCountdown();
-        setInterval(updateCountdown, 60000);
+  function saveT() {
+    const km = parseFloat(document.getElementById('tKm').value);
+    const min = parseInt(document.getElementById('tMin').value);
+    if (!km || km <= 0 || !min || min <= 0) { alert('Vul afstand en tijd in.'); return; }
+    const knee = parseInt(document.getElementById('tKnee').value);
+    const date = document.getElementById('tDate').value;
+    const speed = +(km / (min / 60)).toFixed(2);
+    trainings.push({ id: Date.now(), date, km, min, knee, speed });
+    save();
+    render();
+    document.getElementById('tKm').value = '';
+    document.getElementById('tMin').value = '';
+    document.getElementById('tKnee').value = '0';
+    show('dash', document.querySelector('.nav-item'));
+  }
+
+  function delT(id) {
+    if (!confirm('Training wissen?')) return;
+    trainings = trainings.filter(t => t.id !== id);
+    save();
+    render();
+  }
+
+  function render() {
+    const tot = trainings.reduce((s, t) => s + t.km, 0);
+    const pct = Math.min((tot / TARGET) * 100, 100);
+    document.getElementById('progFill').style.width = pct.toFixed(1) + '%';
+    document.getElementById('progPct').textContent = Math.round(pct) + '%';
+    document.getElementById('progRem').textContent = Math.max(0, TARGET - tot).toFixed(1) + ' km te gaan';
+    document.getElementById('sTot').textContent = tot.toFixed(1);
+    document.getElementById('sSess').textContent = trainings.length;
+    document.getElementById('sSpeed').textContent = trainings.length
+      ? (trainings.reduce((s, t) => s + t.speed, 0) / trainings.length).toFixed(1)
+      : '–';
+
+    let alerts = '';
+    if (trainings.length >= 3) {
+      const avgKnee = trainings.slice(-3).reduce((s, t) => s + (t.knee || 0), 0) / 3;
+      if (avgKnee >= 6) alerts += `<div class="alert warning"><strong>Knie-alert</strong> — gemiddelde pijnscore laatste 3 sessies: ${avgKnee.toFixed(1)}. Neem extra rust.</div>`;
     }
+    const miles = [200,400,600,800].filter(m => tot >= m).map(m => m + ' km');
+    if (miles.length) alerts += `<div class="alert info">Bereikt: ${miles.join(' · ')}</div>`;
+    document.getElementById('alerts').innerHTML = alerts;
 
-    function loadData() {
-        trainings = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    }
-
-    function saveData() {
-        if(isSupporter) return;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(trainings));
-    }
-    
-    function loadTheme() {
-        if (localStorage.getItem(THEME_KEY) === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-    }
-
-    function checkKneeHealth() {
-        if (trainings.length < 3) return "";
-        const last3 = trainings.slice(-3);
-        const avg = last3.reduce((s, x) => s + (parseInt(x.knee) || 0), 0) / 3;
-        if (avg >= 7) return `<div class="card" style="border: 2px solid #e53e3e; background: #fff5f5;"><h3 style="color:#e53e3e; margin-bottom:5px;">⚠️ KNIE ALERT</h3><p style="font-size:0.75rem;">Gemiddelde pijn score: ${avg.toFixed(1)}. Neem extra rust!</p></div>`;
-        return "";
-    }
-
-    function getMilestones() {
-        const total = trainings.reduce((s, x) => s + x.km, 0);
-        let m = "";
-        if (total >= 200) m += "🥉 200km <br>";
-        if (total >= 400) m += "🥈 400km <br>";
-        if (total >= 600) m += "🥇 600km <br>";
-        if (total >= 800) m += "🏆 800km <br>";
-        return m ? `<div class="card" style="text-align:center;"><h3>🏅 MIJLPALEN</h3><p style="font-size:1.1rem; line-height: 1.5; margin-top: 10px;">${m}</p></div>` : "";
-    }
-
-    function updateDonatie() {
-        const val = prompt("Huidig bedrag Berrefonds actie?", localStorage.getItem(DONATIE_KEY) || "0");
-        if (val !== null) { localStorage.setItem(DONATIE_KEY, val); renderAll(); }
-    }
-
-    function generateSupporterLink() {
-        const pack = { t: trainings, d: localStorage.getItem(DONATIE_KEY) || "0" };
-        const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(pack))));
-        const url = window.location.origin + window.location.pathname + '?view=' + encoded;
-        navigator.clipboard.writeText(url).then(() => alert("✅ Link gekopieerd! Deel hem op je Berrefonds pagina."));
-    }
-
-    function saveTraining() {
-        const km = parseFloat(document.getElementById('tKm').value);
-        const min = parseInt(document.getElementById('tMin').value);
-        if(!km || !min) return alert('Vul een afstand en tijd in!');
-        
-        trainings.push({ 
-            id: Date.now(), 
-            date: document.getElementById('tDate').value, 
-            km, min, 
-            knee: document.getElementById('tKnee').value, 
-            night: document.getElementById('tNight').value === 'true', 
-            speed: (km/(min/60)).toFixed(2) 
-        });
-        
-        saveData(); 
-        renderAll(); 
-        switchTab('dash', document.querySelector('.nav-item')); 
-        doCelebration(); 
-        releaseBalloons();
-        
-        document.getElementById('tKm').value = ''; 
-        document.getElementById('tMin').value = '';
-        document.getElementById('tKnee').value = '0';
-        document.getElementById('tNight').value = 'false';
-    }
-
-    function doCelebration() {
-        const container = document.getElementById('celebrationContainer');
-        const colors = ['#f39c12', '#48bb78', '#1a2a6c', '#b21f1f', '#ffffff'];
-        for (let i = 0; i < 50; i++) {
-            const p = document.createElement('div');
-            p.classList.add('celebration-particle');
-            p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            p.style.left = Math.random() * 100 + 'vw'; p.style.top = Math.random() * 100 + 'vh';
-            const x = (Math.random() - 0.5) * 400; const y = (Math.random() - 0.5) * 400;
-            p.style.setProperty('--x', `${x}px`); p.style.setProperty('--y', `${y}px`);
-            container.appendChild(p); p.addEventListener('animationend', () => p.remove());
-        }
-    }
-
-    function releaseBalloons() {
-        const container = document.getElementById('celebrationContainer');
-        for (let i = 0; i < 8; i++) {
-            const b = document.createElement('div');
-            b.classList.add('balloon'); b.style.backgroundColor = ['#e74c3c', '#3498db', '#9b59b6', '#f1c40f'][Math.floor(Math.random()*4)];
-            b.style.left = Math.random() * 85 + 'vw'; b.style.animationDelay = (Math.random() * 2) + 's';
-            container.appendChild(b); setTimeout(() => b.remove(), 9000);
-        }
-    }
-
-    function renderAll() {
-        const total = trainings.reduce((s, x) => s + x.km, 0);
-        document.getElementById('totalKm').innerText = total.toFixed(1);
-        document.getElementById('totalSess').innerText = trainings.length;
-        document.getElementById('avgSpeed').innerText = trainings.length ? (trainings.reduce((s,x)=>s+parseFloat(x.speed),0)/trainings.length).toFixed(1) : 0;
-        document.getElementById('kneeAvg').innerText = trainings.length ? (trainings.reduce((s,x)=>s+(parseInt(x.knee)||0),0)/trainings.length).toFixed(1) : 0;
-        document.getElementById('donatieBedrag').innerText = "€ " + (localStorage.getItem(DONATIE_KEY) || "0");
-        
-        const p = Math.min((total/TARGET_KM)*100, 100);
-        document.getElementById('progressBar').style.width = p + '%';
-        document.getElementById('progressBar').innerText = Math.round(p) + '%';
-        document.getElementById('progText').innerText = `Nog ${(TARGET_KM-total).toFixed(1)} km te gaan`;
-        
-        document.getElementById('dashboardAlerts').innerHTML = checkKneeHealth() + getMilestones();
-        
-        document.getElementById('historyList').innerHTML = trainings.slice().reverse().map(t => `
-            <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <h4 style="margin-bottom:4px;">${t.km} km ${t.night ? '🌙' : ''}</h4>
-                    <small style="color: #718096;">${t.date.split('-').reverse().join('/')} • ${t.speed} km/u</small>
-                </div>
-                ${!isSupporter ? `<button onclick="delT(${t.id})" style="border:none; background:none; font-size:1.2rem; cursor:pointer; padding:5px;">🗑️</button>` : ''}
+    document.getElementById('hist').innerHTML = trainings.length
+      ? trainings.slice().reverse().map(t => `
+          <div class="training-item">
+            <div>
+              <div class="ti-main">${t.km} km</div>
+              <div class="ti-sub">${t.date.split('-').reverse().join('/')} &middot; ${t.min} min &middot; ${t.speed} km/u${t.knee > 0 ? ` &middot; knie ${t.knee}/10` : ''}</div>
             </div>
-        `).join('');
-    }
+            <button class="del-btn" onclick="delT(${t.id})" aria-label="Verwijder training">
+              <i class="ti ti-trash"></i>
+            </button>
+          </div>`).join('')
+      : '<p style="font-size:13px;color:#718096;padding:8px 0;">Nog geen trainingen gelogd.</p>';
+  }
 
-    function renderSchedule() {
-        document.getElementById('mobileSchedule').innerHTML = SCHEDULE_DATA.map(p => `
-            <div class="phase-header">${p.phase}</div>` + 
-            p.weeks.map(w => `<div class="schedule-week">
-                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <b>Week ${w.w}</b> ${w.note ? `<span style="font-size:0.6rem; background:var(--primary); color:white; padding:2px 6px; border-radius:8px;">${w.note}</span>` : ''}
-                </div>
-                <small style="color:#718096; display:block; margin-bottom:5px;">${w.d}</small>
-                ${w.task}
-            </div>`).join('')
-        ).join('');
-    }
-
-    function renderExercises() {
-        document.getElementById('exerciseList').innerHTML = EXERCISE_DATA.map(ex => `
-            <div class="schedule-week" style="border-left-color: var(--primary);">
-                <b>${ex.icon} ${ex.title}</b><br>
-                <small style="color: var(--primary); font-weight:bold;">${ex.reps}</small><br>
-                <span style="font-size:0.75rem; color:#4a5568;">${ex.desc}</span>
+  function renderSchema() {
+    document.getElementById('schemaList').innerHTML = SCHEMA.map(f => `
+      <span class="phase-label phase-${f.faseTag}">${f.fase}</span>
+      ${f.weken.map(w => `
+        <div class="week-card-schema">
+          <div class="week-head">
+            <div class="week-head-left">
+              <span class="week-title">Week ${w.w}</span>
+              <span class="week-tag tag-${f.faseTag}">${f.fase}</span>
             </div>
-        `).join('');
-    }
+            <div class="week-meta">
+              <div class="week-dates">${w.d}</div>
+              <div class="week-total">${w.tot}</div>
+            </div>
+          </div>
+          <div class="days-grid">
+            ${w.dagen.map(d => `
+              <div class="day-col${d.w ? ' weekend' : ''}${d.race ? ' raceday' : ''}">
+                <div class="day-name">${d.n}</div>
+                <div class="day-km ${d.cls}">${d.km}</div>
+                <div class="day-note-small">${d.note}</div>
+              </div>`).join('')}
+          </div>
+        </div>`).join('')}
+    `).join('');
+  }
 
-    function switchTab(id, btn) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(id).classList.add('active'); 
-        btn.classList.add('active');
-    }
+  function renderOefeningen() {
+    document.getElementById('oefenList').innerHTML = OEFENINGEN.map(o => `
+      <div class="ex-item">
+        <div class="ex-title">${o.n}</div>
+        <div class="ex-reps">${o.r}</div>
+        <div class="ex-desc">${o.d}</div>
+      </div>`).join('');
+  }
 
-    function showWelcomeMessage() {
-        const text = ["Klaar voor je kilometers?", "Lekker bezig!", "Dodentocht modus: AAN"];
-        const notif = document.getElementById('notif');
-        notif.innerText = text[Math.floor(Math.random() * text.length)];
-        notif.style.display = 'block';
-        setTimeout(() => { notif.style.display = 'none'; }, 4000);
-    }
+  function updateCountdown() {
+    const days = Math.floor((EVENT - new Date()) / 86400000);
+    document.getElementById('countdown').textContent = `Nog ${days} dagen tot Bornem`;
+  }
 
-    function updateCountdown() { const days = Math.floor((EVENT_DATE - new Date())/(1000*60*60*24)); document.getElementById('countdown').innerText = `⏰ Nog ${days} dagen tot Bornem`; }
-    
-    function delT(id) { 
-        if(isSupporter) return; 
-        if(confirm('Deze training wissen?')) { 
-            trainings = trainings.filter(x=>x.id!==id); 
-            saveData(); 
-            renderAll(); 
-        } 
-    }
-    
-    function toggleTheme() { 
-        document.body.classList.toggle('dark-mode'); 
-        localStorage.setItem(THEME_KEY, document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-    }
-    
-    function clearAllData() { 
-        if(isSupporter) return; 
-        if(confirm('⚠️ WAARSCHUWING: Dit wist al je trainingen en donaties. Zeker weten?')) { 
-            localStorage.removeItem(STORAGE_KEY); 
-            localStorage.removeItem(DONATIE_KEY);
-            location.reload(); 
-        } 
-    }
-    
-    function exportData() { 
-        const blob = new Blob([JSON.stringify({t: trainings, d: localStorage.getItem(DONATIE_KEY)})], {type:'application/json'}); 
-        const url = URL.createObjectURL(blob); 
-        const a = document.createElement('a'); 
-        a.href=url; 
-        a.download=`doto_backup_${new Date().toISOString().split('T')[0]}.json`; 
-        a.click(); 
-    }
+  function exportD() {
+    const blob = new Blob([JSON.stringify(trainings, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `doto_backup_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+  }
 
-    window.onload = init;
+  function clearD() {
+    if (confirm('Alle trainingen wissen? Dit kan niet ongedaan gemaakt worden.')) {
+      trainings = [];
+      save();
+      render();
+    }
+  }
+
+  document.getElementById('tDate').valueAsDate = new Date();
+  updateCountdown();
+  render();
+  renderSchema();
+  renderOefeningen();
 </script>
 </body>
 </html>
