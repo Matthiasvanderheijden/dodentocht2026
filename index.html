@@ -277,7 +277,7 @@
 
 <div id="dash" class="section active">
   <div class="card">
-    <div class="card-label">Jaardoel — 800 km</div>
+    <div class="card-label">Schemadoel — 672 km</div>
     <div class="progress-wrap"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
     <div class="prog-text"><span id="progPct">0%</span><span id="progRem">800 km te gaan</span></div>
   </div>
@@ -347,7 +347,7 @@
 
 <script>
   const KEY = 'doto2026';
-  const TARGET = 800;
+  const TARGET = 672;
   const EVENT = new Date('2026-08-14');
 
   const SCHEMA = [
@@ -512,7 +512,7 @@
       const avgKnee = trainings.slice(-3).reduce((s, t) => s + (t.knee || 0), 0) / 3;
       if (avgKnee >= 6) alerts += `<div class="alert warning"><strong>Knie-alert</strong> — gemiddelde pijnscore laatste 3 sessies: ${avgKnee.toFixed(1)}. Neem extra rust.</div>`;
     }
-    const miles = [200,400,600,800].filter(m => tot >= m).map(m => m + ' km');
+    const miles = [100,200,400,600,672].filter(m => tot >= m).map(m => m === 672 ? '672 km — schema voltooid!' : m + ' km');
     if (miles.length) alerts += `<div class="alert info">Bereikt: ${miles.join(' · ')}</div>`;
     document.getElementById('alerts').innerHTML = alerts;
 
